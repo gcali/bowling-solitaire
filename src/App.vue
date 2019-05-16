@@ -1,11 +1,6 @@
-<template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+<template lang="pug">
+  #app
+    router-view
 </template>
 
 <style>
@@ -27,5 +22,13 @@
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+
+.btn {
+    box-shadow: none;
+    background-color: grey;
+    border-radius: 2px;
+    border: none;
+    padding: 0.5em 1em;
 }
 </style>
