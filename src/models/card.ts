@@ -9,6 +9,8 @@ const suitMapper = {
 
 export class Card {
 
+    public removed: boolean = false;
+
     public selected: boolean = false;
     // tslint:disable-next-line:no-shadowed-variable
     constructor(public suit: suit, public value: number, public covered: boolean = true) {

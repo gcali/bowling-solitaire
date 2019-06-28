@@ -3,7 +3,6 @@ import { Card } from './card';
 const shuffler = shufflerFactory();
 export class Pile<T> {
     constructor(public cards: T[]) {
-
     }
 
     public shuffle(): void {
@@ -15,7 +14,21 @@ export class Pile<T> {
     }
 
     public draw(n: number): T[] {
-        return this.cards.splice(0, n);
+        const startIndex = Math.max(this.cards.length - n, 0);
+        var result = this.cards.splice(startIndex, n);
+        return result;
+    }
+
+    public applyTo(index: number, callback: ((e: T) => void)) {
+        if (this.cards.length === 0) {
+            return;
+        }
+        index = (this.cards.length + index) % this.cards.length;
+        callback(this.cards[index]);
+    }
+
+    public filter(callback: ((card: T) => boolean)) {
+        this.cards = this.cards.filter(callback);
     }
 
     public get length(): number {
@@ -30,7 +43,7 @@ interface ICard {
 export class PinTable<T extends Card> {
 
     public get cardRows(): T[][] {
-        const pins = new Pile<T>(this.cards);
+        const pins = new Pile<T>([...this.cards]);
         const result: T[][] = [];
         for (let i = 4; i > 0; i--) {
             result.push(pins.draw(i));
@@ -38,34 +51,74 @@ export class PinTable<T extends Card> {
         return result;
     }
 
-    constructor(private cards: T[] = []) {
-        if (this.cards.length !== 10) {
-            throw new Error('PinTable must have 10 cards');
+    constructor(private cards: T[]) {
+        if (this.cards.length > 10) {
+            throw new Error('PinTable must have at most 10 cards');
         }
     }
 
-    public select = (card: T) => {
+    public removeSelected = () => {
+        this.cards.forEach(c => {
+            if (c.selected) {
+                c.removed = true;
+                c.selected = false;
+            }
+        })
+    }
+
+    public canRemoveWith = (n: number) => {
+        const expected = this.cards.filter(c => c.selected).map(c => c.value).reduce((curr, next) => curr + next, 0);
+        return expected > 0 && ((expected % 10) == (n % 10));
+    }
+
+    public select = (card: T, isFirstRound: boolean) => {
         if (card.selected) {
             card.selected = false;
+            if (this.getSelectedCount() === 1) {
+                if (this.cardRows[1][1].selected && !this.cardRows[1][1].removed) {
+                    this.cardRows[1][1].selected = false;
+                }
+            }
         } else {
-            if (this.canSelect(card)) {
+            if (this.canSelect(card, isFirstRound)) {
                 card.selected = true;
             }
         }
     }
 
-    private canSelect = (card: T) => {
+    private getSelectedCount(): number {
+        const selectedCount = this.cards.filter((c) => c.selected && !c.removed).length;
+        return selectedCount;
+    }
+
+    private getRowAndIndexes(card: T): [T[], number, number] {
+        const rows = this.cardRows;
+        const row = rows.find((r) => r.indexOf(card) >= 0)!;
+        const indexInRow = row.indexOf(card);
+        const rowIndex = rows.indexOf(row);
+        return [row, rowIndex, indexInRow];
+    }
+
+    private canSelect = (card: T, isFirstRound: boolean) => {
         card = this.cards.find((c) => c.id === card.id)!;
-        const selectedCount = this.cards.filter((c) => c.selected).length;
+        if (card.removed) {
+            return false;
+        }
+
+        const selectedCount = this.getSelectedCount();//this.cards.filter((c) => c.selected && !c.removed).length;
+        const rows = this.cardRows;
+        const [row, rowIndex, indexInRow] = this.getRowAndIndexes(card);
+        if (isFirstRound && selectedCount === 0 && rowIndex === 1 && indexInRow === 1) {
+            return false;
+        }
+        if (isFirstRound && rowIndex === 0) {
+            return false;
+        }
         if (selectedCount === 0) {
             return true;
         } else if (selectedCount >= 3) {
             return false;
         }
-        const rows = this.cardRows;
-        const row = rows.find((r) => r.indexOf(card) >= 0)!;
-        const indexInRow = row.indexOf(card);
-        const rowIndex = rows.indexOf(row);
         if (indexInRow > 0) {
             if (row[indexInRow - 1].selected) {
                 return true;

@@ -1,6 +1,6 @@
 <template lang="pug">
     .card-spot
-        .card(v-if="this.card !== null" @click="$emit('click')" :class="{selected: card.selected}")
+        .card(v-if="this.card !== null && !this.card.removed" @click="$emit('click')" :class="{selected: card.selected}")
             .top-left
                 .value {{card.value}}
                 .suit {{suitMarker}}
@@ -12,16 +12,16 @@
 </template>
 
 <script lang="ts">
-
-export type suit = 'hearts' | 'spades' | 'clubs' | 'diamonds';
+export type suit = "hearts" | "spades" | "clubs" | "diamonds";
 
 export interface ICard {
   value: number;
   suit: suit;
   covered?: boolean;
   selected: boolean;
+  removed: boolean;
 }
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { Component, Vue, Prop } from "vue-property-decorator";
 @Component({})
 export default class Card extends Vue {
   @Prop()
@@ -29,16 +29,14 @@ export default class Card extends Vue {
 
   public get coverStyle() {
     return {
-      display: this.card!.covered === true ? 'block' : 'none',
+      display: this.card!.covered === true ? "block" : "none"
     };
   }
 
   public get suitMarker(): string {
     return this.card!.suit[0].toUpperCase();
   }
-
 }
-
 </script>
 
 <style scoped>
@@ -58,10 +56,15 @@ export default class Card extends Vue {
   justify-content: center;
   background-color: rgb(255, 100, 0);
   box-shadow: 2px 2px 2px black;
+  user-select: none;
 }
 
-.card.selected {
-  border: 1px solid red;
+.card.selected:before {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  content: "";
+  border: 4px solid red;
 }
 
 .top-left {

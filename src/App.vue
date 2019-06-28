@@ -4,17 +4,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue } from "vue-property-decorator";
 @Component({})
-export default class App extends Vue {
-
-}
+export default class App extends Vue {}
 </script>
 
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -34,10 +32,14 @@ export default class App extends Vue {
 }
 
 .btn {
-    box-shadow: none;
-    background-color: grey;
-    border-radius: 2px;
-    border: none;
-    padding: 0.5em 1em;
+  box-shadow: none;
+  background-color: grey;
+  border-radius: 2px;
+  border: none;
+  padding: 0.5em 1em;
+}
+
+button {
+  user-select: none;
 }
 </style>
