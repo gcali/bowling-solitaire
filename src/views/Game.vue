@@ -3,12 +3,13 @@
     GameStatus
     .left-side
       .pin-table
-          .left-status.status
-            StatusVisualizer(label="Ball", value="1", :fixWidth="true")
-          .right-status.status
-            StatusVisualizer(label="Turn", value="12", :invertPosition="true", :fixWidth="true")
-          .pin-row(v-for="cardRow in pinRows" :key="cardRow.id")
-              CardComponent(v-for="card in keyUp(cardRow.element)" :card="card.element" :key="card.id" @click="pinClick(card.element)").pin-card
+        .left-status-group
+          .status
+            StatusVisualizer(label="Ball", value="1")
+          .status
+            StatusVisualizer(label="Turn", value="12")
+        .pin-row(v-for="cardRow in pinRows" :key="cardRow.id")
+            CardComponent(v-for="card in keyUp(cardRow.element)" :card="card.element" :key="card.id" @click="pinClick(card.element)").pin-card
     .drawing-area
         .drawing-stacks
           .drawing-stack(v-for="stack in this.stacks" :key="stack.id")
@@ -120,14 +121,15 @@ export default class Home extends Vue {
   display: flex;
   justify-content: space-evenly;
 }
-.status {
+.left-status-group {
   position: absolute;
   bottom: 18px;
-}
-.left-status {
+  display: flex;
+  flex-direction: column;
   left: 0px;
+  align-items: flex-start;
 }
-.right-status {
-  right: 0px;
+.status:first-child {
+  margin-bottom: 0.5em;
 }
 </style>
