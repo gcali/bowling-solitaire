@@ -87,6 +87,7 @@ export class GameCore {
             s.draw(1);
             s.applyTo(-1, c => c.covered = false);
         });
+        this._isFirstRound = false;
     }
 
     public removeSelectedWith(card: Card) {

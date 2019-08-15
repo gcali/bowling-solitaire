@@ -10,14 +10,14 @@
             StatusVisualizer(label="Turn", value="12")
         .pin-row(v-for="cardRow in pinRows" :key="cardRow.id")
             CardComponent(v-for="card in keyUp(cardRow.element)" :card="card.element" :key="card.id" @click="pinClick(card.element)").pin-card
+        .action-area
+          button(@click="gameCore.removeTopFromStacks()", :class="{hide: !this.gameCore.isFirstRound}") New ball
+          button(@click="gameCore.resetCards()", :class="{hide: this.gameCore.isFirstRound}") End round
+          //- button(@click="gameCore.suggestCard()") Suggest card
     .drawing-area
         .drawing-stacks
           .drawing-stack(v-for="stack in this.stacks" :key="stack.id")
               CardPile(:cards="stack.element" @cardSelected="myLog")
-        .action-area
-          button(@click="gameCore.removeTopFromStacks()") New ball
-          button(@click="gameCore.resetCards()") End round
-          button(@click="gameCore.suggestCard()") Suggest card
 
 </template>
 
@@ -111,6 +111,9 @@ export default class Home extends Vue {
   flex-direction: row;
   align-items: center;
   justify-content: space-evenly;
+  position: absolute;
+  bottom: 18px;
+  right: 0px;
 }
 
 .drawing-stacks {
@@ -131,5 +134,9 @@ export default class Home extends Vue {
 }
 .status:first-child {
   margin-bottom: 0.5em;
+}
+
+.hide {
+  display: none;
 }
 </style>
