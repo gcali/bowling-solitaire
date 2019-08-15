@@ -2,11 +2,11 @@
     .card-spot
         .card(v-if="this.card !== null && !this.card.removed" @click="$emit('click')" :class="{selected: card.selected}")
             .top-left
-                .value {{card.value}}
+                //- .value {{card.value}}
                 .suit {{suitMarker}}
             .center-value {{card.value}}
             .bottom-right
-                .value {{card.value}}
+                //- .value {{card.value}}
                 .suit {{suitMarker}}
             .cover(:style="coverStyle")
 </template>
@@ -34,7 +34,12 @@ export default class Card extends Vue {
   }
 
   public get suitMarker(): string {
-    return this.card!.suit[0].toUpperCase();
+    const suit = this.card!.suit[0].toUpperCase();
+    if (suit == "H") {
+      return "♥";
+    } else {
+      return "♠";
+    }
   }
 }
 </script>
@@ -55,8 +60,15 @@ export default class Card extends Vue {
   align-items: center;
   justify-content: center;
   background-color: rgb(255, 100, 0);
+  background-color: #dfea10;
   box-shadow: 2px 2px 2px black;
   user-select: none;
+  /* color: white; */
+  color: #ffe76b;
+  color: #39465d;
+  -webkit-text-stroke-color: black;
+  font-weight: bold;
+  font-size: 20px;
 }
 
 .card.selected:before {
@@ -82,11 +94,18 @@ export default class Card extends Vue {
   display: flex;
   flex-direction: row;
 }
+.suit {
+  color: green;
+  font-size: 26px;
+  padding: 0em 0.1em;
+}
 
 .cover {
   position: absolute;
   width: 100%;
   height: 100%;
   background-color: red;
+  background-color: #b907f8;
+  background-color: #c75522;
 }
 </style>

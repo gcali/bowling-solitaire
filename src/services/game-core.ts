@@ -1,9 +1,18 @@
 import { Card, suit } from '@/models/card';
 import { PinTable, Pile } from '@/models/deck';
+import { allSubsets } from '@/utils/sequence';
 
 export class GameCore {
 
-    private isFirstRound: boolean = true;
+    public get isFirstRound(): boolean {
+        return this._isFirstRound;
+    }
+
+    public roundNumber(): number {
+        return 0;
+    }
+
+    private _isFirstRound: boolean = true;
     constructor(public pinTable: PinTable<Card>, public stacks: Pile<Card>[]) { }
 
     public static generateRandomly(): GameCore {
@@ -40,25 +49,37 @@ export class GameCore {
     }
 
     private acted() {
-
     }
 
     public suggestCard() {
-
+        this.getAllSelectableCombinations();
     }
 
     private getAllSelectableCombinations() {
+        var cardSubsets = allSubsets(this.pinTable.cardRows.flatMap(e => e).filter(e => !e.removed)).filter(s => s.length <= 3 && s.length >= 1);
+        const pinTable = new PinTable<Card>(this.pinTable.cardRows.flatMap(e => e));
+        pinTable.cardRows.forEach(r => console.log(JSON.stringify(r)));
+        const values = cardSubsets.filter(s => pinTable.canSelectMultiple(s, this._isFirstRound)).map(s => [s, s.reduce((acc, curr) => acc + curr.value, 0)]);
+        const possibleChoices = this.stacks.filter(s => s.length > 0).map(s => s.cards.filter(c => !c.covered)[0].value % 10);
+        console.log(
+            JSON.stringify(
+                values.filter(v => possibleChoices.indexOf((v[1] as number) % 10) >= 0),
+                null,
+                4
+            )
+        );
     }
 
     public resetCards() {
         const [pinTable, stacks] = GameCore.getPinsAndStacks(GameCore.drawRandomCards());
         this.pinTable = pinTable;
         this.stacks = stacks;
-        this.isFirstRound = true;
+        this._isFirstRound = true;
+        this.getAllSelectableCombinations();
     }
 
     public select = (card: Card) => {
-        return this.pinTable.select(card, this.isFirstRound);
+        return this.pinTable.select(card, this._isFirstRound);
     }
 
     public removeTopFromStacks() {
@@ -80,7 +101,7 @@ export class GameCore {
             pile.draw(1);
             pile.applyTo(-1, e => e.covered = false);
             this.pinTable.removeSelected();
-            this.isFirstRound = false;
+            this._isFirstRound = false;
         }
     }
 }

@@ -25,7 +25,6 @@ export default class CardPile extends Vue {
   }
 
   private get translatedCards() {
-    console.log(this.cards);
     return this.cards.map((card, index) => {
       return {
         style: {

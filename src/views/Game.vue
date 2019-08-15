@@ -1,8 +1,14 @@
 <template lang="pug">
 .game-table
-    .pin-table
-        .pin-row(v-for="cardRow in pinRows" :key="cardRow.id")
-            CardComponent(v-for="card in keyUp(cardRow.element)" :card="card.element" :key="card.id" @click="pinClick(card.element)").pin-card
+    GameStatus
+    .left-side
+      .pin-table
+          .left-status.status
+            StatusVisualizer(label="Ball", value="1", :fixWidth="true")
+          .right-status.status
+            StatusVisualizer(label="Turn", value="12", :invertPosition="true", :fixWidth="true")
+          .pin-row(v-for="cardRow in pinRows" :key="cardRow.id")
+              CardComponent(v-for="card in keyUp(cardRow.element)" :card="card.element" :key="card.id" @click="pinClick(card.element)").pin-card
     .drawing-area
         .drawing-stacks
           .drawing-stack(v-for="stack in this.stacks" :key="stack.id")
@@ -10,6 +16,7 @@
         .action-area
           button(@click="gameCore.removeTopFromStacks()") New ball
           button(@click="gameCore.resetCards()") End round
+          button(@click="gameCore.suggestCard()") Suggest card
 
 </template>
 
@@ -17,13 +24,15 @@
 import { Component, Vue } from "vue-property-decorator";
 import CardComponent, { ICard, suit } from "../components/Card.vue";
 import CardPile from "../components/CardPile.vue";
+import GameStatus from "../components/GameStatus.vue";
+import StatusVisualizer from "../components/StatusVisualizer.vue";
 import { Card } from "../models/card";
 import { Pile, PinTable } from "../models/deck";
 import { KeyedElement, keyUp } from "../utils/sequence";
 import { GameCore } from "@/services/game-core";
 
 @Component({
-  components: { CardComponent, CardPile }
+  components: { CardComponent, CardPile, GameStatus, StatusVisualizer }
 })
 export default class Home extends Vue {
   private myLog(e: any) {
@@ -57,6 +66,7 @@ export default class Home extends Vue {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  background-color: green;
 }
 
 .pin-row {
@@ -72,16 +82,22 @@ export default class Home extends Vue {
   margin-right: 1em;
 }
 
+.left-side {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  max-width: 100%;
+}
+
 .pin-table {
   flex: 1 0 auto;
-  background-color: green;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   padding: 1em;
+  position: relative;
 }
 .drawing-area {
-  background-color: green;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -97,10 +113,21 @@ export default class Home extends Vue {
 }
 
 .drawing-stacks {
+  padding: 1em;
   flex: 0 1 auto;
   flex-direction: row;
   flex-wrap: wrap;
   display: flex;
   justify-content: space-evenly;
+}
+.status {
+  position: absolute;
+  bottom: 18px;
+}
+.left-status {
+  left: 0px;
+}
+.right-status {
+  right: 0px;
 }
 </style>

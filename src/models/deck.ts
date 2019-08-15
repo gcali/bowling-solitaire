@@ -1,5 +1,6 @@
 import shufflerFactory from 'randomshuffle';
 import { Card } from './card';
+
 const shuffler = shufflerFactory();
 export class Pile<T> {
     constructor(public cards: T[]) {
@@ -55,6 +56,7 @@ export class PinTable<T extends Card> {
         if (this.cards.length > 10) {
             throw new Error('PinTable must have at most 10 cards');
         }
+        this.cards = this.cards.reverse();
     }
 
     public removeSelected = () => {
@@ -99,6 +101,24 @@ export class PinTable<T extends Card> {
         return [row, rowIndex, indexInRow];
     }
 
+    public canSelectMultiple = (cards: T[], isFirstRound: boolean) => {
+        if (cards.length === 0) {
+            return true;
+        }
+        for (let i = 0; i < cards.length; i++) {
+            if (this.canSelect(cards[i], isFirstRound)) {
+                this.select(cards[i], isFirstRound);
+                const canSelect = this.canSelectMultiple(cards.slice(0, i).concat(cards.slice(i + 1)), isFirstRound);
+                this.select(cards[i], isFirstRound);
+                if (canSelect) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    //private canSelect = (card: T, isFirstRound: boolean) => {
     private canSelect = (card: T, isFirstRound: boolean) => {
         card = this.cards.find((c) => c.id === card.id)!;
         if (card.removed) {
