@@ -1,8 +1,8 @@
 <template lang="pug">
 .status-visualizer(:style="mainStyle")
-    .label(:style="styleFirst") {{label}}
-    .value(:class="{'with-background': this.withBackground}") {{value}}
-    .label(:style="styleSecond") {{label}}
+    .label.label-color(:style="styleFirst") {{label}}
+    .value.value-color {{value}}
+    .label.label-color(:style="styleSecond") {{label}}
 </template>
 
 <script lang="ts">
@@ -13,8 +13,6 @@ export default class StatusVisualizer extends Vue {
   public label!: string;
   @Prop({ required: false, default: "" })
   public value!: string;
-  @Prop({ required: false, default: false })
-  public withBackground!: boolean;
   @Prop({ required: false, default: false })
   public invertPosition!: boolean;
   @Prop({ required: false, default: false })
@@ -52,25 +50,22 @@ export default class StatusVisualizer extends Vue {
   padding: 0.5em 1em;
 }
 
-.label,
-.value {
-  /* padding: 0.5em 0; */
-}
-
 .label {
   text-transform: uppercase;
-  color: yellowgreen;
+  /* color: yellowgreen; */
 }
-:not(.with-background).value {
+/* :not(.with-background).value {
   color: yellow;
-  /* padding-left: 0px;
-  padding-right: 0px; */
-}
+} */
 
-.with-background {
+/* .value {
+  line-height: 20px;
+} */
+
+/* .with-background {
   background-color: white;
   border-radius: 0.3em;
   margin-right: 0.5em;
   margin: 0.2em 0.4em;
-}
+} */
 </style>

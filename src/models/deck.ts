@@ -60,26 +60,41 @@ export class PinTable<T extends Card> {
     }
 
     public removeSelected = () => {
+        let counter = 0;
         this.cards.forEach(c => {
             if (c.selected) {
+                counter++;
                 c.removed = true;
                 c.selected = false;
             }
-        })
+        });
+        return counter;
+    }
+
+    private get selectedCards(): T[] {
+        return this.cards.filter(c => c.selected);
+    }
+
+    public get currentlySelectedSum(): number {
+        const selectedCards = this.selectedCards;
+        return selectedCards
+            .map(c => c.value)
+            .reduce((curr, next) => curr + next, 0);
     }
 
     public canRemoveWith = (n: number) => {
-        const expected = this.cards.filter(c => c.selected).map(c => c.value).reduce((curr, next) => curr + next, 0);
+        const expected = this.currentlySelectedSum;
+        // const expected = this.cards.filter(c => c.selected).map(c => c.value).reduce((curr, next) => curr + next, 0);
         return expected > 0 && ((expected % 10) == (n % 10));
     }
 
     public select = (card: T, isFirstRound: boolean) => {
         if (card.selected) {
             card.selected = false;
-            if (this.getSelectedCount() === 1) {
-                if (this.cardRows[1][1].selected && !this.cardRows[1][1].removed) {
-                    this.cardRows[1][1].selected = false;
-                }
+            var selectedCards = this.cards.filter(c => c.selected);
+            selectedCards.forEach(c => c.selected = false);
+            if (this.canSelectMultiple(selectedCards, isFirstRound)) {
+                selectedCards.forEach(c => c.selected = true);
             }
         } else {
             if (this.canSelect(card, isFirstRound)) {

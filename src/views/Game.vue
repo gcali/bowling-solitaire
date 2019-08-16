@@ -1,19 +1,19 @@
 <template lang="pug">
-.game-table
-    GameStatus
+.game-table.table-background-color
+    GameStatus(:gameCore="this.gameCore")
     .left-side
       .pin-table
         .left-status-group
           .status
-            StatusVisualizer(label="Ball", value="1")
+            StatusVisualizer(label="Ball", :value="this.gameCore.isFirstRoll ? '1' : '2'")
           .status
-            StatusVisualizer(label="Turn", value="12")
+            StatusVisualizer(label="Turn", :value="this.gameCore.turnCounter")
         .pin-row(v-for="cardRow in pinRows" :key="cardRow.id")
             CardComponent(v-for="card in keyUp(cardRow.element)" :card="card.element" :key="card.id" @click="pinClick(card.element)").pin-card
         .action-area
-          button(@click="gameCore.removeTopFromStacks()", :class="{hide: !this.gameCore.isFirstRound}") New ball
-          button(@click="gameCore.resetCards()", :class="{hide: this.gameCore.isFirstRound}") End round
-          //- button(@click="gameCore.suggestCard()") Suggest card
+          button.end-roll.dark-background-color.label-color(@click="gameCore.endBall()", :class="{hide: this.gameCore.isGameOver}") End roll
+          //- button(@click="gameCore.endBall()", :class="{hide: !this.gameCore.isFirstRound}") New ball
+          //- button(@click="gameCore.endTurn()", :class="{hide: this.gameCore.isFirstRound}") End round
     .drawing-area
         .drawing-stacks
           .drawing-stack(v-for="stack in this.stacks" :key="stack.id")
@@ -67,7 +67,25 @@ export default class Home extends Vue {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+}
+
+.label-color {
+  color: yellowgreen;
+}
+
+.value-color {
+  color: yellow;
+}
+
+.table-color {
+  color: green;
+}
+.table-background-color {
   background-color: green;
+}
+
+.dark-background-color {
+  background-color: #025002;
 }
 
 .pin-row {
@@ -112,8 +130,8 @@ export default class Home extends Vue {
   align-items: center;
   justify-content: space-evenly;
   position: absolute;
-  bottom: 18px;
-  right: 0px;
+  bottom: 36px;
+  right: 15px;
 }
 
 .drawing-stacks {
@@ -138,5 +156,12 @@ export default class Home extends Vue {
 
 .hide {
   display: none;
+}
+
+button {
+  border: none;
+  padding: 0.5em 1em;
+  box-shadow: 1px 1px 1px 1px black;
+  transform: translate(-5px, -5px);
 }
 </style>

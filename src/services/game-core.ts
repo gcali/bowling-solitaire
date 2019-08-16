@@ -1,18 +1,27 @@
 import { Card, suit } from '@/models/card';
 import { PinTable, Pile } from '@/models/deck';
 import { allSubsets } from '@/utils/sequence';
+import { Score } from '@/models/score';
 
 export class GameCore {
 
-    public get isFirstRound(): boolean {
-        return this._isFirstRound;
+    public get isFirstRoll(): boolean {
+        return this._score.isFirstRound;
     }
 
-    public roundNumber(): number {
-        return 0;
+    public get turnCounter(): number {
+        return this._score.frame;
     }
 
     private _isFirstRound: boolean = true;
+    private _score: Score = new Score();
+
+    public get isGameOver() {
+        return this._score.isGameOver;
+    }
+    public get totalScore() {
+        return this._score.totalScore;
+    }
     constructor(public pinTable: PinTable<Card>, public stacks: Pile<Card>[]) { }
 
     public static generateRandomly(): GameCore {
@@ -70,11 +79,25 @@ export class GameCore {
         );
     }
 
-    public resetCards() {
+    private endTurn() {
+        this.resetCards();
+    }
+
+    public endBall() {
+        const isFrameOver = this._score.ballOut();
+        if (!isFrameOver) {
+            this.removeTopFromStacks();
+        } else {
+            this.endTurn();
+        }
+        // this.removeTopFromStacks();
+    }
+
+    private resetCards() {
         const [pinTable, stacks] = GameCore.getPinsAndStacks(GameCore.drawRandomCards());
         this.pinTable = pinTable;
         this.stacks = stacks;
-        this._isFirstRound = true;
+        // this._isFirstRound = true;
         this.getAllSelectableCombinations();
     }
 
@@ -82,12 +105,17 @@ export class GameCore {
         return this.pinTable.select(card, this._isFirstRound);
     }
 
-    public removeTopFromStacks() {
+
+    private removeTopFromStacks() {
         this.stacks.forEach(s => {
             s.draw(1);
             s.applyTo(-1, c => c.covered = false);
         });
         this._isFirstRound = false;
+    }
+
+    public get selectedSum(): number {
+        return this.pinTable.currentlySelectedSum;
     }
 
     public removeSelectedWith(card: Card) {
@@ -101,8 +129,9 @@ export class GameCore {
             card.selected = false;
             pile.draw(1);
             pile.applyTo(-1, e => e.covered = false);
-            this.pinTable.removeSelected();
+            const removed = this.pinTable.removeSelected();
             this._isFirstRound = false;
+            this._score.ballStrikes(removed);
         }
     }
 }
