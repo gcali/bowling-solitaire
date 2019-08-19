@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-export type suit = "hearts" | "spades" | "clubs" | "diamonds";
+export type suit = 'hearts' | 'spades' | 'clubs' | 'diamonds';
 
 export interface ICard {
   value: number;
@@ -21,7 +21,7 @@ export interface ICard {
   selected: boolean;
   removed: boolean;
 }
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop } from 'vue-property-decorator';
 @Component({})
 export default class Card extends Vue {
   @Prop()
@@ -29,16 +29,16 @@ export default class Card extends Vue {
 
   public get coverStyle() {
     return {
-      display: this.card!.covered === true ? "block" : "none"
+      display: this.card!.covered === true ? 'block' : 'none',
     };
   }
 
   public get suitMarker(): string {
-    const suit = this.card!.suit[0].toUpperCase();
-    if (suit == "H") {
-      return "♥";
+    const cardSuit = this.card!.suit[0].toUpperCase();
+    if (cardSuit === 'H') {
+      return '♥';
     } else {
-      return "♠";
+      return '♠';
     }
   }
 }

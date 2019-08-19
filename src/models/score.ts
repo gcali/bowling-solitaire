@@ -3,8 +3,8 @@ export interface FrameScore {
     score: number;
     rollScores: RollScore[];
     stillToAdd: number;
-};
-type RollScore = number | "X" | "/" | "-";
+}
+type RollScore = number | 'X' | '/' | '-';
 
 export class Score {
 
@@ -18,7 +18,7 @@ export class Score {
     }
 
     public get totalScore(): number {
-        return this.frameScores.map(s => s.score).reduce((a, b) => a + b, 0);
+        return this.frameScores.map((s) => s.score).reduce((a, b) => a + b, 0);
     }
 
     public get frame(): number {
@@ -27,7 +27,7 @@ export class Score {
     }
 
     public get isGameOver() {
-        return this.frame > 10 && this.frameScores.map(f => f.stillToAdd).filter(f => f > 0).length == 0;
+        return this.frame > 10 && this.frameScores.map((f) => f.stillToAdd).filter((f) => f > 0).length === 0;
     }
 
     public get isFirstRound(): boolean {
@@ -35,7 +35,7 @@ export class Score {
     }
 
     public ballOut(): boolean {
-        this.frameScores.forEach(s => {
+        this.frameScores.forEach((s) => {
             if (s.stillToAdd) {
                 s.score += this._currentBallStrike;
                 s.stillToAdd--;
@@ -50,23 +50,22 @@ export class Score {
                 rollScores: [],
             };
             if (this.frameScores.length < 10) {
-                const prevScore = this.frameScores.map(f => f.score).reduce((a, b) => a + b, 0);
+                const prevScore = this.frameScores.map((f) => f.score).reduce((a, b) => a + b, 0);
                 this._currentScore.prevScore = prevScore;
                 this.frameScores.push(this._currentScore);
             }
-        }
-        else {
+        } else {
             this._currentScore.score += this._currentBallStrike;
         }
-        const isFrameOver = !wasScoreNull || this._currentBallStrike == 10;
+        const isFrameOver = !wasScoreNull || this._currentBallStrike === 10;
         if (isFrameOver) {
             this._frameNumber += 1;
-            if (this._currentBallStrike == 10) {
+            if (this._currentBallStrike === 10) {
                 this._currentScore.stillToAdd = 2;
-                this._currentScore.rollScores.push("X");
-            } else if (this._currentScore.score == 10) {
+                this._currentScore.rollScores.push('X');
+            } else if (this._currentScore.score === 10) {
                 this._currentScore.stillToAdd = 1;
-                this._currentScore.rollScores.push("/");
+                this._currentScore.rollScores.push('/');
             } else {
                 this._currentScore.rollScores.push(this.getFromScore(this._currentBallStrike));
             }
@@ -81,7 +80,7 @@ export class Score {
 
     private getFromScore(s: number): RollScore {
         if (s === 0) {
-            return "-";
+            return '-';
         } else {
             return s;
         }

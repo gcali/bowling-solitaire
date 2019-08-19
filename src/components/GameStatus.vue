@@ -5,9 +5,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
-import StatusVisualizer from "./StatusVisualizer.vue";
-import { GameCore } from "@/services/game-core";
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import StatusVisualizer from './StatusVisualizer.vue';
+import { GameCore } from '@/services/game-core';
 @Component({ components: { StatusVisualizer } })
 export default class GameStatus extends Vue {
   @Prop({ required: true })
@@ -15,8 +15,8 @@ export default class GameStatus extends Vue {
 
   private get selected(): string {
     const selected = this.gameCore.selectedSum;
-    if (selected == 0) {
-      return "∅";
+    if (selected === 0) {
+      return '∅';
     } else {
       return selected.toString();
     }

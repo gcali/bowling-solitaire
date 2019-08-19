@@ -6,12 +6,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop } from 'vue-property-decorator';
 @Component({})
 export default class StatusVisualizer extends Vue {
   @Prop({ required: true })
   public label!: string;
-  @Prop({ required: false, default: "" })
+  @Prop({ required: false, default: '' })
   public value!: string;
   @Prop({ required: false, default: false })
   public invertPosition!: boolean;
@@ -21,21 +21,21 @@ export default class StatusVisualizer extends Vue {
   public get mainStyle() {
     return this.fixWidth
       ? {
-          width: "6em"
-        }
+        width: '6em',
+      }
       : {};
   }
 
   public get styleFirst() {
     return {
-      display: this.invertPosition ? "none" : "block",
-      paddingRight: !this.invertPosition && !this.fixWidth ? "0.5em" : "0em"
+      display: this.invertPosition ? 'none' : 'block',
+      paddingRight: !this.invertPosition && !this.fixWidth ? '0.5em' : '0em',
     };
   }
   public get styleSecond() {
     return {
-      display: this.invertPosition ? "block" : "none",
-      paddingLeft: this.invertPosition && !this.fixWidth ? "0.5em" : "0em"
+      display: this.invertPosition ? 'block' : 'none',
+      paddingLeft: this.invertPosition && !this.fixWidth ? '0.5em' : '0em',
     };
   }
 }

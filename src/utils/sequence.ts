@@ -8,10 +8,12 @@ export const keyUp = <T>(es: T[]): Array<KeyedElement<T>> => es.map((e, i) => ({
 export const permutations = <T>(source: T[]): T[][] => {
     let result: T[][] = [];
     for (let i = 0; i < source.length; i++) {
-        result = result.concat(permutations(source.slice(0, i).concat(source.slice(i + 1)))).map(l => [source[i]].concat(l));
+        result = result
+            .concat(permutations(source.slice(0, i).concat(source.slice(i + 1))))
+            .map((l) => [source[i]].concat(l));
     }
     return result;
-}
+};
 export const allSubsets = <T>(source: T[]): T[][] => {
     if (source.length === 0) {
         return [[]];
@@ -19,5 +21,5 @@ export const allSubsets = <T>(source: T[]): T[][] => {
     const firstElement = source[0];
     const otherElements = source.slice(1);
     const recursiveSubsets = allSubsets(otherElements);
-    return [...recursiveSubsets].concat(recursiveSubsets.map(e => [firstElement, ...e]));
+    return [...recursiveSubsets].concat(recursiveSubsets.map((e) => [firstElement, ...e]));
 };

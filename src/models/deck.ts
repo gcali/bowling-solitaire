@@ -16,7 +16,7 @@ export class Pile<T> {
 
     public draw(n: number): T[] {
         const startIndex = Math.max(this.cards.length - n, 0);
-        var result = this.cards.splice(startIndex, n);
+        const result = this.cards.splice(startIndex, n);
         return result;
     }
 
@@ -52,6 +52,17 @@ export class PinTable<T extends Card> {
         return result;
     }
 
+    private get selectedCards(): T[] {
+        return this.cards.filter((c) => c.selected);
+    }
+
+    public get currentlySelectedSum(): number {
+        const selectedCards = this.selectedCards;
+        return selectedCards
+            .map((c) => c.value)
+            .reduce((curr, next) => curr + next, 0);
+    }
+
     constructor(private cards: T[]) {
         if (this.cards.length > 10) {
             throw new Error('PinTable must have at most 10 cards');
@@ -61,7 +72,7 @@ export class PinTable<T extends Card> {
 
     public removeSelected = () => {
         let counter = 0;
-        this.cards.forEach(c => {
+        this.cards.forEach((c) => {
             if (c.selected) {
                 counter++;
                 c.removed = true;
@@ -71,49 +82,25 @@ export class PinTable<T extends Card> {
         return counter;
     }
 
-    private get selectedCards(): T[] {
-        return this.cards.filter(c => c.selected);
-    }
-
-    public get currentlySelectedSum(): number {
-        const selectedCards = this.selectedCards;
-        return selectedCards
-            .map(c => c.value)
-            .reduce((curr, next) => curr + next, 0);
-    }
-
     public canRemoveWith = (n: number) => {
         const expected = this.currentlySelectedSum;
         // const expected = this.cards.filter(c => c.selected).map(c => c.value).reduce((curr, next) => curr + next, 0);
-        return expected > 0 && ((expected % 10) == (n % 10));
+        return expected > 0 && ((expected % 10) === (n % 10));
     }
 
     public select = (card: T, isFirstRound: boolean) => {
         if (card.selected) {
             card.selected = false;
-            var selectedCards = this.cards.filter(c => c.selected);
-            selectedCards.forEach(c => c.selected = false);
+            const selectedCards = this.cards.filter((c) => c.selected);
+            selectedCards.forEach((c) => c.selected = false);
             if (this.canSelectMultiple(selectedCards, isFirstRound)) {
-                selectedCards.forEach(c => c.selected = true);
+                selectedCards.forEach((c) => c.selected = true);
             }
         } else {
             if (this.canSelect(card, isFirstRound)) {
                 card.selected = true;
             }
         }
-    }
-
-    private getSelectedCount(): number {
-        const selectedCount = this.cards.filter((c) => c.selected && !c.removed).length;
-        return selectedCount;
-    }
-
-    private getRowAndIndexes(card: T): [T[], number, number] {
-        const rows = this.cardRows;
-        const row = rows.find((r) => r.indexOf(card) >= 0)!;
-        const indexInRow = row.indexOf(card);
-        const rowIndex = rows.indexOf(row);
-        return [row, rowIndex, indexInRow];
     }
 
     public canSelectMultiple = (cards: T[], isFirstRound: boolean) => {
@@ -133,14 +120,27 @@ export class PinTable<T extends Card> {
         return false;
     }
 
-    //private canSelect = (card: T, isFirstRound: boolean) => {
+    private getSelectedCount(): number {
+        const selectedCount = this.cards.filter((c) => c.selected && !c.removed).length;
+        return selectedCount;
+    }
+
+    private getRowAndIndexes(card: T): [T[], number, number] {
+        const rows = this.cardRows;
+        const row = rows.find((r) => r.indexOf(card) >= 0)!;
+        const indexInRow = row.indexOf(card);
+        const rowIndex = rows.indexOf(row);
+        return [row, rowIndex, indexInRow];
+    }
+
+    // private canSelect = (card: T, isFirstRound: boolean) => {
     private canSelect = (card: T, isFirstRound: boolean) => {
         card = this.cards.find((c) => c.id === card.id)!;
         if (card.removed) {
             return false;
         }
 
-        const selectedCount = this.getSelectedCount();//this.cards.filter((c) => c.selected && !c.removed).length;
+        const selectedCount = this.getSelectedCount(); // this.cards.filter((c) => c.selected && !c.removed).length;
         const rows = this.cardRows;
         const [row, rowIndex, indexInRow] = this.getRowAndIndexes(card);
         if (isFirstRound && selectedCount === 0 && rowIndex === 1 && indexInRow === 1) {

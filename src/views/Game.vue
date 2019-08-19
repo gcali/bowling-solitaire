@@ -1,39 +1,39 @@
 <template lang="pug">
-.game-table.table-background-color
+.game-wrapper
+    .game-over(:onlick="this.handleGameOver()", :class="{hide: !this.showGameOver}")
     GameStatus(:gameCore="this.gameCore")
-    .left-side
-      .pin-table
-        .left-status-group
-          .status
-            StatusVisualizer(label="Ball", :value="this.gameCore.isFirstRoll ? '1' : '2'")
-          .status
-            StatusVisualizer(label="Turn", :value="this.gameCore.turnCounter")
-        .pin-row(v-for="cardRow in pinRows" :key="cardRow.id")
-            CardComponent(v-for="card in keyUp(cardRow.element)" :card="card.element" :key="card.id" @click="pinClick(card.element)").pin-card
-        .action-area
-          button.end-roll.dark-background-color.label-color(@click="gameCore.endBall()", :class="{hide: this.gameCore.isGameOver}") End roll
-          //- button(@click="gameCore.endBall()", :class="{hide: !this.gameCore.isFirstRound}") New ball
-          //- button(@click="gameCore.endTurn()", :class="{hide: this.gameCore.isFirstRound}") End round
-    .drawing-area
-        .drawing-stacks
-          .drawing-stack(v-for="stack in this.stacks" :key="stack.id")
-              CardPile(:cards="stack.element" @cardSelected="myLog")
-        .score-area
-            ScoreFrame(v-for="(frame, index) in this.gameCore.frameScores", :key="index", :frame="frame", :round="index + 1")
+    .game-table.table-background-color
+      .left-side
+        .pin-table
+          .left-status-group
+            .status
+              StatusVisualizer(label="Ball", :value="this.gameCore.isFirstRoll ? '1' : '2'")
+            .status
+              StatusVisualizer(label="Turn", :value="this.gameCore.turnCounter")
+          .pin-row(v-for="cardRow in pinRows" :key="cardRow.id")
+              CardComponent(v-for="card in keyUp(cardRow.element)" :card="card.element" :key="card.id" @click="pinClick(card.element)").pin-card
+          .action-area
+            button.end-roll.dark-background-color.label-color(@click="gameCore.endBall()", :class="{hide: this.gameCore.isGameOver}") End roll
+      .drawing-area
+          .drawing-stacks
+            .drawing-stack(v-for="stack in this.stacks" :key="stack.id")
+                CardPile(:cards="stack.element" @cardSelected="myLog")
+          .score-area
+              ScoreFrame(v-for="(frame, index) in this.gameCore.frameScores", :key="index", :frame="frame", :round="index + 1")
 
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import CardComponent, { ICard, suit } from "../components/Card.vue";
-import CardPile from "../components/CardPile.vue";
-import GameStatus from "../components/GameStatus.vue";
-import StatusVisualizer from "../components/StatusVisualizer.vue";
-import ScoreFrame from "../components/ScoreFrame.vue";
-import { Card } from "../models/card";
-import { Pile, PinTable } from "../models/deck";
-import { KeyedElement, keyUp } from "../utils/sequence";
-import { GameCore } from "@/services/game-core";
+import { Component, Vue } from 'vue-property-decorator';
+import CardComponent, { ICard, suit } from '../components/Card.vue';
+import CardPile from '../components/CardPile.vue';
+import GameStatus from '../components/GameStatus.vue';
+import StatusVisualizer from '../components/StatusVisualizer.vue';
+import ScoreFrame from '../components/ScoreFrame.vue';
+import { Card } from '../models/card';
+import { Pile, PinTable } from '../models/deck';
+import { KeyedElement, keyUp } from '../utils/sequence';
+import { GameCore } from '@/services/game-core';
 
 @Component({
   components: {
@@ -41,15 +41,18 @@ import { GameCore } from "@/services/game-core";
     CardPile,
     GameStatus,
     StatusVisualizer,
-    ScoreFrame
-  }
+    ScoreFrame,
+  },
 })
 export default class Home extends Vue {
-  private myLog(e: any) {
-    this.gameCore.removeSelectedWith(e);
-  }
   private get pinRows() {
     return keyUp(this.gameCore.pinTable.cardRows);
+  }
+
+  private showGameOver: boolean = false;
+
+  private get stacks() {
+    return keyUp(this.gameCore.stacks.map((s) => s.cards));
   }
 
   private keyUp = keyUp;
@@ -58,11 +61,20 @@ export default class Home extends Vue {
   private howManyStacks: number = 3;
 
   public mounted() {
+    this.setGameCore(GameCore.generateRandomly());
     this.gameCore = GameCore.generateRandomly();
   }
 
-  private get stacks() {
-    return keyUp(this.gameCore.stacks.map(s => s.cards));
+  private setGameCore(gameCore: GameCore) {
+    this.gameCore = gameCore;
+  }
+
+  private myLog(e: any) {
+    this.gameCore.removeSelectedWith(e);
+  }
+
+  private handleGameOver() {
+    this.showGameOver = false;
   }
 
   private pinClick(card: Card) {
@@ -112,7 +124,7 @@ export default class Home extends Vue {
 
 .left-side {
   display: flex;
-  flex: 0 1 30em;
+  flex: 1 1 30em;
   flex-direction: column;
   max-width: 100%;
 }
@@ -130,7 +142,7 @@ export default class Home extends Vue {
   flex-direction: column;
   justify-content: flex-start;
   flex: 1 1 auto;
-  align-items: stretch;
+  align-items: center;
 }
 
 .action-area {

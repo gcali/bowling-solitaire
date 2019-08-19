@@ -8,8 +8,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
-import { FrameScore } from "../models/score";
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import { FrameScore } from '../models/score';
 @Component({})
 export default class ScoreFrame extends Vue {
   private get indicators() {
