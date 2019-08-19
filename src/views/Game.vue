@@ -18,6 +18,8 @@
         .drawing-stacks
           .drawing-stack(v-for="stack in this.stacks" :key="stack.id")
               CardPile(:cards="stack.element" @cardSelected="myLog")
+        .score-area
+            ScoreFrame(v-for="(frame, index) in this.gameCore.frameScores", :key="index", :frame="frame", :round="index + 1")
 
 </template>
 
@@ -27,13 +29,20 @@ import CardComponent, { ICard, suit } from "../components/Card.vue";
 import CardPile from "../components/CardPile.vue";
 import GameStatus from "../components/GameStatus.vue";
 import StatusVisualizer from "../components/StatusVisualizer.vue";
+import ScoreFrame from "../components/ScoreFrame.vue";
 import { Card } from "../models/card";
 import { Pile, PinTable } from "../models/deck";
 import { KeyedElement, keyUp } from "../utils/sequence";
 import { GameCore } from "@/services/game-core";
 
 @Component({
-  components: { CardComponent, CardPile, GameStatus, StatusVisualizer }
+  components: {
+    CardComponent,
+    CardPile,
+    GameStatus,
+    StatusVisualizer,
+    ScoreFrame
+  }
 })
 export default class Home extends Vue {
   private myLog(e: any) {
@@ -103,7 +112,7 @@ export default class Home extends Vue {
 
 .left-side {
   display: flex;
-  flex: 1 0 auto;
+  flex: 0 1 30em;
   flex-direction: column;
   max-width: 100%;
 }
@@ -120,7 +129,8 @@ export default class Home extends Vue {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  flex: 1 0 auto;
+  flex: 1 1 auto;
+  align-items: stretch;
 }
 
 .action-area {
@@ -134,13 +144,16 @@ export default class Home extends Vue {
   right: 15px;
 }
 
+.drawing-stack:not(:last-child) {
+  margin-right: 1em;
+}
 .drawing-stacks {
   padding: 1em;
-  flex: 0 1 auto;
+  flex: 0 1 10em;
   flex-direction: row;
   flex-wrap: wrap;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: flex-start;
 }
 .left-status-group {
   position: absolute;
@@ -163,5 +176,11 @@ button {
   padding: 0.5em 1em;
   box-shadow: 1px 1px 1px 1px black;
   transform: translate(-5px, -5px);
+}
+.score-area {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 30em;
+  justify-content: center;
 }
 </style>

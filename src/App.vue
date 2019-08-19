@@ -42,4 +42,8 @@ export default class App extends Vue {}
 button {
   user-select: none;
 }
+
+body {
+  background-color: green;
+}
 </style>

@@ -5,6 +5,10 @@ import { Score } from '@/models/score';
 
 export class GameCore {
 
+    public get frameScores() {
+        return this._score.frameScores;
+    }
+
     public get isFirstRoll(): boolean {
         return this._score.isFirstRound;
     }

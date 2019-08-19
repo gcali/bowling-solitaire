@@ -1,15 +1,16 @@
-interface FrameScore {
+export interface FrameScore {
+    prevScore: number;
     score: number;
+    rollScores: RollScore[];
     stillToAdd: number;
-    strike: boolean;
-    spare: boolean;
-}
+};
+type RollScore = number | "X" | "/" | "-";
+
 export class Score {
 
-    private frameScores: FrameScore[] = [];
+    public frameScores: FrameScore[] = [];
     private _frameNumber = 1;
     private _currentBallStrike: number = 0;
-    private _rollNumber = 1;
     private _currentScore?: FrameScore;
 
     public ballStrikes(howMany: number) {
@@ -43,12 +44,14 @@ export class Score {
         const wasScoreNull = this._currentScore === undefined;
         if (!this._currentScore) {
             this._currentScore = {
+                prevScore: 0,
                 score: this._currentBallStrike,
                 stillToAdd: 0,
-                spare: false,
-                strike: false
+                rollScores: [],
             };
             if (this.frameScores.length < 10) {
+                const prevScore = this.frameScores.map(f => f.score).reduce((a, b) => a + b, 0);
+                this._currentScore.prevScore = prevScore;
                 this.frameScores.push(this._currentScore);
             }
         }
@@ -58,17 +61,29 @@ export class Score {
         const isFrameOver = !wasScoreNull || this._currentBallStrike == 10;
         if (isFrameOver) {
             this._frameNumber += 1;
-            // this.frameScores.push(this._currentScore);
             if (this._currentBallStrike == 10) {
-                this._currentScore.strike = true;
                 this._currentScore.stillToAdd = 2;
+                this._currentScore.rollScores.push("X");
             } else if (this._currentScore.score == 10) {
-                this._currentScore.spare = true;
                 this._currentScore.stillToAdd = 1;
+                this._currentScore.rollScores.push("/");
+            } else {
+                this._currentScore.rollScores.push(this.getFromScore(this._currentBallStrike));
             }
+
             this._currentScore = undefined;
+        } else {
+            this._currentScore.rollScores.push(this.getFromScore(this._currentBallStrike));
         }
         this._currentBallStrike = 0;
         return isFrameOver;
+    }
+
+    private getFromScore(s: number): RollScore {
+        if (s === 0) {
+            return "-";
+        } else {
+            return s;
+        }
     }
 }
