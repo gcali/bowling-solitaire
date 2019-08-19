@@ -1,7 +1,8 @@
 <template lang="pug">
 .game-status.dark-background-color
     StatusVisualizer(label="Score", :value="this.gameCore.totalScore")
-    StatusVisualizer(label="Selected", :value="this.selected")
+    StatusVisualizer(label="Selected", :value="this.selected", :class="{hide: this.gameCore.isGameOver}")
+    StatusVisualizer(label="Game over", value="", :class="{hide: !this.gameCore.isGameOver}")
 </template>
 
 <script lang="ts">

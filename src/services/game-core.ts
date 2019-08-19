@@ -60,10 +60,15 @@ export class GameCore {
 
         return [pinTable, stacks.map((s) => new Pile<Card>(s))];
     }
+    private _gameOverCallback: (() => void) | null = null;
 
     private _isFirstRound: boolean = true;
     private _score: Score = new Score();
     constructor(public pinTable: PinTable<Card>, public stacks: Array<Pile<Card>>) { }
+
+    public setGameOverCallback(callback: (() => void)) {
+        this._gameOverCallback = callback;
+    }
 
     public suggestCard() {
         this.getAllSelectableCombinations();
@@ -75,6 +80,9 @@ export class GameCore {
             this.removeTopFromStacks();
         } else {
             this.endTurn();
+        }
+        if (this.isGameOver && this._gameOverCallback) {
+            this._gameOverCallback();
         }
         // this.removeTopFromStacks();
     }

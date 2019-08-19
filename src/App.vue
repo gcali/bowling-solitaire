@@ -45,6 +45,22 @@ button {
   user-select: none;
 }
 
+button:focus {
+  outline: none;
+  position: relative;
+}
+
+button:hover:after {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  content: "";
+  background-color: rgba(255, 255, 255, 0.2);
+  top: 0;
+  left: 0;
+  /* outline: darkgreen inset; */
+}
+
 body {
   background-color: green;
 }

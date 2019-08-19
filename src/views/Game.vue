@@ -1,6 +1,6 @@
 <template lang="pug">
 .game-wrapper
-    .game-over(:onlick="this.handleGameOver()", :class="{hide: !this.showGameOver}")
+    .game-over(@click="this.handleGameOver", :class="{hide: !this.gameCore.isGameOver || this.hideGameOver}")
     GameStatus(:gameCore="this.gameCore")
     .game-table.table-background-color
       .left-side
@@ -14,6 +14,7 @@
               CardComponent(v-for="card in keyUp(cardRow.element)" :card="card.element" :key="card.id" @click="pinClick(card.element)").pin-card
           .action-area
             button.end-roll.dark-background-color.label-color(@click="gameCore.endBall()", :class="{hide: this.gameCore.isGameOver}") End roll
+            button.end-roll.dark-background-color.label-color(@click="newGame", :class="{hide: !this.gameCore.isGameOver}") New game
       .drawing-area
           .drawing-stacks
             .drawing-stack(v-for="stack in this.stacks" :key="stack.id")
@@ -49,7 +50,7 @@ export default class Home extends Vue {
     return keyUp(this.gameCore.pinTable.cardRows);
   }
 
-  private showGameOver: boolean = false;
+  private hideGameOver: boolean = false;
 
   private get stacks() {
     return keyUp(this.gameCore.stacks.map((s) => s.cards));
@@ -62,11 +63,15 @@ export default class Home extends Vue {
 
   public mounted() {
     this.setGameCore(GameCore.generateRandomly());
-    this.gameCore = GameCore.generateRandomly();
+  }
+
+  private newGame() {
+    this.setGameCore(GameCore.generateRandomly());
   }
 
   private setGameCore(gameCore: GameCore) {
     this.gameCore = gameCore;
+    this.hideGameOver = false;
   }
 
   private myLog(e: any) {
@@ -74,11 +79,13 @@ export default class Home extends Vue {
   }
 
   private handleGameOver() {
-    this.showGameOver = false;
+    this.hideGameOver = true;
   }
 
   private pinClick(card: Card) {
-    this.gameCore.select(card);
+    if (!this.gameCore.isGameOver) {
+      this.gameCore.select(card);
+    }
   }
 }
 </script>
@@ -88,6 +95,7 @@ export default class Home extends Vue {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  align-items: flex-start;
 }
 
 .label-color {
@@ -124,7 +132,7 @@ export default class Home extends Vue {
 
 .left-side {
   display: flex;
-  flex: 1 1 30em;
+  flex: 0 1 30em;
   flex-direction: column;
   max-width: 100%;
 }
@@ -180,7 +188,7 @@ export default class Home extends Vue {
 }
 
 .hide {
-  display: none;
+  display: none !important;
 }
 
 button {
@@ -188,11 +196,36 @@ button {
   padding: 0.5em 1em;
   box-shadow: 1px 1px 1px 1px black;
   transform: translate(-5px, -5px);
+  text-transform: uppercase;
 }
 .score-area {
   display: flex;
   flex-wrap: wrap;
   max-width: 30em;
   justify-content: center;
+}
+
+.game-over {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 100;
+  background-color: #00000057;
+}
+
+.game-over:after {
+  content: "Game Over";
+  text-transform: uppercase;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 5em 10em;
+  color: yellow;
+  background-color: darkgreen;
+}
+
+.game-wrapper {
+  position: relative;
 }
 </style>
