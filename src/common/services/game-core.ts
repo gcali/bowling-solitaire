@@ -1,7 +1,7 @@
-import { Card, suit } from '@/models/card';
-import { PinTable, Pile } from '@/models/deck';
-import { allSubsets } from '@/utils/sequence';
-import { Score } from '@/models/score';
+import { Card, suit } from '@common/models/card';
+import { PinTable, Pile } from '@common/models/deck';
+import { allSubsets } from '@common/utils/sequence';
+import { Score } from '@common/models/score';
 
 export class GameCore {
 

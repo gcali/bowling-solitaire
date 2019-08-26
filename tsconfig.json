@@ -15,8 +15,14 @@
       "webpack-env"
     ],
     "paths": {
-      "@/*": [
-        "src/*"
+      "@common/*": [
+        "src/common/*"
+      ],
+      "@client/*": [
+        "src/client/*"
+      ],
+      "@server/*": [
+        "src/server/*"
       ]
     },
     "lib": [

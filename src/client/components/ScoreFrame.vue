@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
-import { FrameScore } from '../models/score';
+import { FrameScore } from '@common/models/score';
 @Component({})
 export default class ScoreFrame extends Vue {
   private get indicators() {

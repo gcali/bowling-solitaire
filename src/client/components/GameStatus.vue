@@ -8,7 +8,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import StatusVisualizer from './StatusVisualizer.vue';
-import { GameCore } from '@/services/game-core';
+import { GameCore } from '@common/services/game-core';
 @Component({ components: { StatusVisualizer } })
 export default class GameStatus extends Vue {
   @Prop({ required: true })

@@ -31,10 +31,10 @@ import CardPile from '../components/CardPile.vue';
 import GameStatus from '../components/GameStatus.vue';
 import StatusVisualizer from '../components/StatusVisualizer.vue';
 import ScoreFrame from '../components/ScoreFrame.vue';
-import { Card } from '../models/card';
-import { Pile, PinTable } from '../models/deck';
-import { KeyedElement, keyUp } from '../utils/sequence';
-import { GameCore } from '@/services/game-core';
+import { Card } from '@common/models/card';
+import { Pile, PinTable } from '@common/models/deck';
+import { KeyedElement, keyUp } from '@common/utils/sequence';
+import { GameCore } from '@common/services/game-core';
 
 @Component({
   components: {
