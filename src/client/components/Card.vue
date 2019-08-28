@@ -94,6 +94,7 @@ export default class Card extends Vue {
   display: flex;
   flex-direction: row;
 }
+
 .suit {
   color: green;
   font-size: 26px;

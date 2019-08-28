@@ -4,7 +4,12 @@ const tslib_1 = require("tslib");
 const common_1 = require("@nestjs/common");
 let AppService = class AppService {
     getHello() {
-        return 'Hello World!';
+        return 'Does it now?';
+    }
+    getNew() {
+        return {
+            message: 'What happens if I return an obj?'
+        };
     }
 };
 AppService = tslib_1.__decorate([
