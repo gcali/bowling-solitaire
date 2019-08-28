@@ -3,14 +3,31 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "deploy": "npm run build && push-dir --dir=dist --branch=gh-pages --cleanup"
+    "client-serve": "vue-cli-service serve",
+    "client-build": "vue-cli-service build",
+    "client-lint": "vue-cli-service lint",
+    "client-deploy": "npm run build && push-dir --dir=dist --branch=gh-pages --cleanup",
+    "server-build": "rimraf server-dist && tsc -p tsconfig.server.json",
+    "server-start": "ts-node -r tsconfig-paths/register src/server/main.ts",
+    "server-start:dev": "tsc-watch -p tsconfig.server.json --onSuccess \"node server-dist/server/main.js\"",
+    "server-start:debug": "tsc-watch -p tsconfig.server.json --onSuccess \"node --inspect-brk server-dist/server/main.js\"",
+    "server-start:prod": "node server-dist/server/main.js",
+    "server-lint": "tslint -p tsconfig.server.json -c tslint.json",
+    "server-test": "jest",
+    "server-test:watch": "jest --watch",
+    "server-test:cov": "jest --coverage",
+    "server-test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "server-test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@nestjs/common": "^6.0.0",
+    "@nestjs/core": "^6.5.3",
+    "@nestjs/platform-express": "^6.0.0",
     "core-js": "^2.6.5",
     "randomshuffle": "^1.0.0",
+    "reflect-metadata": "^0.1.12",
+    "rimraf": "^2.6.2",
+    "rxjs": "^6.3.3",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
     "vue-property-decorator": "^8.1.0",
@@ -25,6 +42,33 @@
     "pug-plain-loader": "^1.0.0",
     "push-dir": "^0.4.1",
     "typescript": "^3.4.3",
-    "vue-template-compiler": "^2.5.21"
+    "vue-template-compiler": "^2.5.21",
+    "@nestjs/testing": "^6.0.0",
+    "@types/express": "4.16.1",
+    "@types/jest": "24.0.11",
+    "@types/node": "11.13.4",
+    "@types/supertest": "2.0.7",
+    "jest": "24.7.1",
+    "prettier": "1.17.0",
+    "supertest": "4.0.2",
+    "ts-jest": "24.0.2",
+    "ts-node": "8.1.0",
+    "tsc-watch": "2.2.1",
+    "tsconfig-paths": "3.8.0",
+    "tslint": "5.16.0"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src/server",
+    "testRegex": ".spec.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "coverageDirectory": "../../coverage",
+    "testEnvironment": "node"
   }
 }
