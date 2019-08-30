@@ -25,16 +25,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import CardComponent, { ICard, suit } from '../components/Card.vue';
-import CardPile from '../components/CardPile.vue';
-import GameStatus from '../components/GameStatus.vue';
-import StatusVisualizer from '../components/StatusVisualizer.vue';
-import ScoreFrame from '../components/ScoreFrame.vue';
-import { Card } from '@common/models/card';
-import { Pile, PinTable } from '@common/models/deck';
-import { KeyedElement, keyUp } from '@common/utils/sequence';
-import { GameCore } from '@common/services/game-core';
+import { Component, Vue } from "vue-property-decorator";
+import CardComponent, { ICard, suit } from "../components/Card.vue";
+import CardPile from "../components/CardPile.vue";
+import GameStatus from "../components/GameStatus.vue";
+import StatusVisualizer from "../components/StatusVisualizer.vue";
+import ScoreFrame from "../components/ScoreFrame.vue";
+import { Card } from "@common/models/card";
+import { Pile, PinTable } from "@common/models/deck";
+import { KeyedElement, keyUp } from "@common/utils/sequence";
+import { GameCore } from "@common/models/game-core";
 
 @Component({
   components: {
@@ -42,8 +42,8 @@ import { GameCore } from '@common/services/game-core';
     CardPile,
     GameStatus,
     StatusVisualizer,
-    ScoreFrame,
-  },
+    ScoreFrame
+  }
 })
 export default class Home extends Vue {
   private get pinRows() {
@@ -53,7 +53,7 @@ export default class Home extends Vue {
   private hideGameOver: boolean = false;
 
   private get stacks() {
-    return keyUp(this.gameCore.stacks.map((s) => s.cards));
+    return keyUp(this.gameCore.stacks.map(s => s.cards));
   }
 
   private keyUp = keyUp;
