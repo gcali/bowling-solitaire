@@ -52,6 +52,10 @@ export class PinTable<T extends Card> {
         return result;
     }
 
+    public get flatCards(): T[] {
+        return this.cards.reverse();
+    }
+
     private get selectedCards(): T[] {
         return this.cards.filter((c) => c.selected);
     }

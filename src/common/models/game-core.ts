@@ -64,7 +64,10 @@ export class GameCore {
 
     private _isFirstRound: boolean = true;
     private _score: Score = new Score();
-    constructor(public pinTable: PinTable<Card>, public stacks: Array<Pile<Card>>) { }
+
+    constructor(public pinTable: PinTable<Card>, public stacks: Array<Pile<Card>>) {
+
+    }
 
     public setGameOverCallback(callback: (() => void)) {
         this._gameOverCallback = callback;
