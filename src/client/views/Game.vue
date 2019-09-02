@@ -1,8 +1,8 @@
 <template lang="pug">
 .game-wrapper
     .game-over(@click="this.handleGameOver", :class="{hide: !this.gameCore.isGameOver || this.hideGameOver}")
-    GameStatus(:gameCore="this.gameCore")
-    .game-table.table-background-color
+    GameStatus(:gameCore="this.gameCore", @hamburgerClick="showMenu=!showMenu")
+    .game-table.table-background-color(@click="showMenu=false")
       .left-side
         .pin-table
           .left-status-group
@@ -21,6 +21,7 @@
                 CardPile(:cards="stack.element" @cardSelected="myLog")
           .score-area
               ScoreFrame(v-for="(frame, index) in this.gameCore.frameScores", :key="index", :frame="frame", :round="index + 1")
+    LeftMenu(:shouldShow="showMenu",@close="showMenu = false")
 
 </template>
 
@@ -31,6 +32,7 @@ import CardPile from "../components/CardPile.vue";
 import GameStatus from "../components/GameStatus.vue";
 import StatusVisualizer from "../components/StatusVisualizer.vue";
 import ScoreFrame from "../components/ScoreFrame.vue";
+import LeftMenu from "../components/LeftMenu.vue";
 import { Card } from "@common/models/card";
 import { Pile, PinTable } from "@common/models/deck";
 import { KeyedElement, keyUp } from "@common/utils/sequence";
@@ -42,13 +44,16 @@ import { GameCore } from "@common/models/game-core";
     CardPile,
     GameStatus,
     StatusVisualizer,
-    ScoreFrame
+    ScoreFrame,
+    LeftMenu
   }
 })
 export default class Home extends Vue {
   private get pinRows() {
     return keyUp(this.gameCore.pinTable.cardRows);
   }
+
+  private showMenu: boolean = false;
 
   private hideGameOver: boolean = false;
 
@@ -92,10 +97,14 @@ export default class Home extends Vue {
 
 <style>
 .game-table {
+  position: relative;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: flex-start;
+  max-width: 60em;
+  margin: 0 auto;
+  margin-top: 2em;
 }
 
 .label-color {
@@ -104,6 +113,14 @@ export default class Home extends Vue {
 
 .value-color {
   color: yellow;
+}
+
+.label-background-color {
+  background-color: yellowgreen;
+}
+
+.value-background-color {
+  background-color: yellow;
 }
 
 .table-color {
@@ -225,7 +242,12 @@ button {
   background-color: darkgreen;
 }
 
+.end-roll {
+  cursor: pointer;
+}
+
 .game-wrapper {
   position: relative;
+  overflow: hidden;
 }
 </style>

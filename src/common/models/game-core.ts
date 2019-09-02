@@ -6,22 +6,22 @@ import { Score } from '@common/models/score';
 export class GameCore {
 
     public get frameScores() {
-        return this._score.frameScores;
+        return this.score.frameScores;
     }
 
     public get isFirstRoll(): boolean {
-        return this._score.isFirstRound;
+        return this.score.isFirstRound;
     }
 
     public get turnCounter(): number {
-        return this._score.frame;
+        return this.score.frame;
     }
 
     public get isGameOver() {
-        return this._score.isGameOver;
+        return this.score.isGameOver;
     }
     public get totalScore() {
-        return this._score.totalScore;
+        return this.score.totalScore;
     }
 
     public get selectedSum(): number {
@@ -63,10 +63,14 @@ export class GameCore {
     private _gameOverCallback: (() => void) | null = null;
 
     private _isFirstRound: boolean = true;
-    private _score: Score = new Score();
+    public score: Score;
 
-    constructor(public pinTable: PinTable<Card>, public stacks: Array<Pile<Card>>) {
-
+    constructor(public pinTable: PinTable<Card>, public stacks: Array<Pile<Card>>, score?: Score) {
+        if (score) {
+            this.score = score;
+        } else {
+            this.score = new Score();
+        }
     }
 
     public setGameOverCallback(callback: (() => void)) {
@@ -78,7 +82,7 @@ export class GameCore {
     }
 
     public endBall() {
-        const isFrameOver = this._score.ballOut();
+        const isFrameOver = this.score.ballOut();
         if (!isFrameOver) {
             this.removeTopFromStacks();
         } else {
@@ -107,7 +111,7 @@ export class GameCore {
             pile.applyTo(-1, (e) => e.covered = false);
             const removed = this.pinTable.removeSelected();
             this._isFirstRound = false;
-            this._score.ballStrikes(removed);
+            this.score.ballStrikes(removed);
         }
     }
 

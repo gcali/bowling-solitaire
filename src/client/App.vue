@@ -4,9 +4,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue } from "vue-property-decorator";
 @Component({})
-export default class App extends Vue { }
+export default class App extends Vue {}
 </script>
 
 
@@ -17,8 +17,8 @@ export default class App extends Vue { }
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  max-width: 60em;
-  margin: 0 auto;
+  /* max-width: 60em;
+  margin: 0 auto; */
 }
 #nav {
   padding: 30px;
@@ -63,5 +63,12 @@ button:hover:after {
 
 body {
   background-color: green;
+  margin: 0;
+}
+.label {
+  user-select: none;
+}
+.value {
+  user-select: none;
 }
 </style>

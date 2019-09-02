@@ -6,12 +6,43 @@ export interface FrameScore {
 }
 type RollScore = number | 'X' | '/' | '-';
 
+export interface ScoreData {
+    frameScores: FrameScore[],
+    frame: number,
+    currentBallStrike: number,
+    currentScore?: FrameScore
+}
+
 export class Score {
 
     public frameScores: FrameScore[] = [];
-    private _frameNumber = 1;
+    private _frame = 1;
     private _currentBallStrike: number = 0;
     private _currentScore?: FrameScore;
+
+    constructor(
+        args?: ScoreData
+    ) {
+        if (args) {
+            this.frameScores = args.frameScores;
+            this._frame = args.frame;
+            this._currentBallStrike = args.currentBallStrike;
+            this._currentScore = args.currentScore;
+        }
+    }
+
+    public get frame() {
+        return this._frame;
+    }
+
+    public getScoreData(): ScoreData {
+        return {
+            frameScores: this.frameScores,
+            frame: this._frame,
+            currentBallStrike: this._currentBallStrike,
+            currentScore: this._currentScore
+        };
+    }
 
     public ballStrikes(howMany: number) {
         this._currentBallStrike += howMany;
@@ -21,13 +52,13 @@ export class Score {
         return this.frameScores.map((s) => s.score).reduce((a, b) => a + b, 0);
     }
 
-    public get frame(): number {
-        return this._frameNumber;
+    // public get frame(): number {
+    //     return this._frameNumber;
 
-    }
+    // }
 
     public get isGameOver() {
-        return this.frame > 10 && this.frameScores.map((f) => f.stillToAdd).filter((f) => f > 0).length === 0;
+        return this._frame > 10 && this.frameScores.map((f) => f.stillToAdd).filter((f) => f > 0).length === 0;
     }
 
     public get isFirstRound(): boolean {
@@ -59,7 +90,7 @@ export class Score {
         }
         const isFrameOver = !wasScoreNull || this._currentBallStrike === 10;
         if (isFrameOver) {
-            this._frameNumber += 1;
+            this._frame += 1;
             if (this._currentBallStrike === 10) {
                 this._currentScore.stillToAdd = 2;
                 this._currentScore.rollScores.push('X');
