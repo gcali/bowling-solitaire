@@ -36,5 +36,3 @@ class Store {
 }
 
 export const store = new Store(true);
-
-(window as any).store = store;
