@@ -12,6 +12,14 @@
 
 </head>
 
+<script>
+  if ('serviceWorker' in navigator) {
+    // Use the window load event to keep the page load performant
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('bowling-solitaire/service-worker.js');
+    });
+  }</script>
+
 <body>
   <noscript>
     <strong>We're sorry but bowling-solitaire doesn't work properly without JavaScript enabled. Please enable it to
