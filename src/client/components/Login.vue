@@ -24,7 +24,8 @@ interface UserData {
 
 import Modal from './Modal.vue';
 import { Component, Vue, Prop, Emit, Watch } from 'vue-property-decorator';
-import { UserService, UserLogInError, UserValidationError, UserSignUpError } from '@client/service/user';
+import { UserService, UserLogInError, UserSignUpError } from '@client/service/user';
+import { UserValidationService } from '@client/service/validation';
 import Loader from './Loader.vue';
 
 @Component({ components: { Modal, Loader } })
@@ -34,7 +35,8 @@ export default class Login extends Vue {
 
   private showLoader: boolean = false;
 
-  private userService = new UserService();
+  private readonly userService = new UserService();
+  private readonly userValidationService = new UserValidationService();
 
   private errors: string[] = [];
 
@@ -62,11 +64,7 @@ export default class Login extends Vue {
     if (this.validateAndSetLogInClientError(this.userData)) {
       await this.withLoader(async () => {
         const errors = await this.userService.logIn(this.userData);
-        if (errors.length > 0) {
-          this.errors = this.mapLogInErrors(errors);
-          return false;
-        }
-        return true;
+        return this.handleErrors(errors, this.userValidationService.mapLogInErrors);
       });
     }
   }
@@ -76,54 +74,23 @@ export default class Login extends Vue {
       await this.withLoader(
         async () => {
           const errors = await this.userService.signUp(this.userData);
-          if (errors.length > 0) {
-            this.errors = this.mapSignUpErrors(errors);
-            return false;
-          }
-          return true;
+          return this.handleErrors(errors, this.userValidationService.mapSignUpErrors);
         });
     }
   }
 
-  private mapSignUpErrors(errors: UserSignUpError[]): string[] {
-    return errors.map((e) => {
-      switch (e) {
-        case 'USER_EXISTING': return 'User already exists';
-      }
-    });
-  }
-
-  private mapLogInErrors(errors: UserLogInError[]): string[] {
-    return errors.map((e) => {
-      switch (e) {
-        case 'USER_NOT_FOUND': return 'User was not found';
-        case 'WRONG_PASSWORD': return 'Wrong password';
-      }
-    });
-  }
-
-  private mapUserValidationErrors(errors: UserValidationError[]): string {
-    const missingFields = errors.map((e) => {
-      switch (e) {
-        case 'NO_USER': return 'user';
-        case 'NO_PASSWORD': return 'password';
-      }
-    });
-    let error = missingFields.join(' and ');
-    if (error) {
-      error = error[0].toUpperCase() + error.slice(1);
-    }
-    return error;
-  }
-
-  private validateAndSetLogInClientError(userData: UserData): boolean {
-    const errors = this.userService.validate(this.userData);
+  private handleErrors<T>(errors: T[], mapper: ((es: T[]) => string[])): boolean {
     if (errors.length > 0) {
-      const error = this.mapUserValidationErrors(errors);
-      this.errors = [`${error} required`];
+      this.errors = mapper(errors);
       return false;
     }
     return true;
+  }
+
+
+  private validateAndSetLogInClientError(userData: UserData): boolean {
+    const errors = this.userValidationService.validate(this.userData);
+    return this.handleErrors(errors, this.userValidationService.mapUserValidationErrors);
   }
 
   private handleClose() {

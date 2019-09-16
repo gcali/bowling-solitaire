@@ -7,10 +7,10 @@ export interface FrameScore {
 type RollScore = number | 'X' | '/' | '-';
 
 export interface ScoreData {
-    frameScores: FrameScore[],
-    frame: number,
-    currentBallStrike: number,
-    currentScore?: FrameScore
+    frameScores: FrameScore[];
+    frame: number;
+    currentBallStrike: number;
+    currentScore?: FrameScore;
 }
 
 export class Score {
@@ -21,7 +21,7 @@ export class Score {
     private _currentScore?: FrameScore;
 
     constructor(
-        args?: ScoreData
+        args?: ScoreData,
     ) {
         if (args) {
             this.frameScores = args.frameScores;
@@ -40,7 +40,7 @@ export class Score {
             frameScores: this.frameScores,
             frame: this._frame,
             currentBallStrike: this._currentBallStrike,
-            currentScore: this._currentScore
+            currentScore: this._currentScore,
         };
     }
 

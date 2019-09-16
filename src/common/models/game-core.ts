@@ -60,10 +60,10 @@ export class GameCore {
 
         return [pinTable, stacks.map((s) => new Pile<Card>(s))];
     }
+    public score: Score;
     private _gameOverCallback: (() => void) | null = null;
 
     private _isFirstRound: boolean = true;
-    public score: Score;
 
     constructor(public pinTable: PinTable<Card>, public stacks: Array<Pile<Card>>, score?: Score) {
         if (score) {
