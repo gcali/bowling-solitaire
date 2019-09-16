@@ -6,7 +6,7 @@
                 input.input(v-model="userData.userName", ref="focus-input")
             .input-row
                 .label Password
-                input(type="password").input(v-model="userData.password")
+                input.input(type="password", v-model="userData.password")
             .actions
                 button.dark-background-color.label-color(@click="signUp()") Sign up
                 button.table-background-color.label-color(@click="logIn()") Log in
