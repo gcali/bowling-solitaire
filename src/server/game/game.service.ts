@@ -12,7 +12,7 @@ class Game {
     public constructor(
         public id: string,
         public userName: string,
-        public status?: SerializedGameStatus
+        public status?: SerializedGameStatus,
     ) { }
 }
 
@@ -32,13 +32,19 @@ class GameDatabase {
     }
 
     public searchGames(userName: string): Game[] {
-        return Object.values(this.data).filter(game => game.userName === userName);
+        return Object.values(this.data).filter((game) => game.userName === userName);
     }
 }
 
 @Injectable()
 export class GameService {
     private readonly _serializer: Serializer;
+
+    private readonly _database: GameDatabase;
+    public constructor() {
+        this._database = new GameDatabase();
+        this._serializer = new Serializer();
+    }
     public close(id: string): void {
         const game = this._database.loadGame(id);
         if (!game) {
@@ -49,7 +55,7 @@ export class GameService {
     }
     public search(userName: string): object {
         return {
-            ids: this._database.searchGames(userName).map(g => g.id)
+            ids: this._database.searchGames(userName).map((g) => g.id),
         };
     }
     public getStatus(id: string): Game {
@@ -61,12 +67,6 @@ export class GameService {
         const newGame = new Game(guidGenerator(), userName, gameStatus);
         this._database.saveGame(newGame);
         return newGame.id;
-    }
-
-    private readonly _database: GameDatabase;
-    public constructor() {
-        this._database = new GameDatabase();
-        this._serializer = new Serializer();
     }
 
 }

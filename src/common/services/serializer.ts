@@ -6,15 +6,19 @@ import { ScoreData, Score } from '@common/models/score';
 
 export class Serializer {
     public serializeDbGameCore(core: GameCore): SerializedGameStatus {
-        const status = new SerializedGameStatus(core.pinTable.flatCards, core.stacks.map(s => s.cards), this.serializeScoreData(core.score));
+        const status = new SerializedGameStatus(
+            core.pinTable.flatCards,
+            core.stacks.map((s) => s.cards),
+            this.serializeScoreData(core.score),
+        );
         return status;
     }
 
     public deserializedDbGameCore(status: SerializedGameStatus): GameCore {
         const core = new GameCore(
             new PinTable<Card>(status.pins),
-            status.stacks.map(s => new Pile<Card>(s)),
-            this.deserializeScoreData(status.score)
+            status.stacks.map((s) => new Pile<Card>(s)),
+            this.deserializeScoreData(status.score),
         );
         return core;
     }

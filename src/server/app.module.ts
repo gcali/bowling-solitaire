@@ -13,8 +13,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: 'postgres',
       password: 'password',
       database: 'db',
-      synchronize: true
-    })
+      synchronize: true,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

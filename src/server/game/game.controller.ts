@@ -2,16 +2,16 @@ import { Controller, Get, Post, Body, Query, Param, Put, Delete } from '@nestjs/
 import { GameService } from './game.service';
 
 class NewGamePayload {
-    readonly userName!: string;
+    public readonly userName!: string;
 }
 
 class MoveIdentifier {
-    readonly selectedCards!: number[];
-    readonly ballCard!: number;
+    public readonly selectedCards!: number[];
+    public readonly ballCard!: number;
 }
 
 class Search {
-    readonly userName!: string;
+    public readonly userName!: string;
 }
 
 @Controller('game')
@@ -30,14 +30,14 @@ export class GameController {
     public Move(@Param('id') id: string, @Body() payload: MoveIdentifier): object {
         return {
             id,
-            payload
+            payload,
         };
     }
 
     @Post(':id/end-roll')
     public Roll(@Param('id') id: string): object {
         return {
-            message: 'Roll done'
+            message: 'Roll done',
         };
     }
 
