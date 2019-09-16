@@ -4,14 +4,14 @@
     </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop } from 'vue-property-decorator';
 @Component({})
 export default class Hamburger extends Vue {
   private size = 15;
   private get lines() {
     const ls = [];
     for (let i = 0; i < 3; i++) {
-      ls.push({ id: i, top: this.size + 2 * i * this.size + "%" });
+      ls.push({ id: i, top: 2 * i * this.size + '%' });
     }
     return ls;
   }
