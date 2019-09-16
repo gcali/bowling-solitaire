@@ -6,7 +6,7 @@
     "client-serve": "vue-cli-service serve",
     "client-build": "vue-cli-service build",
     "client-lint": "vue-cli-service lint",
-    "client-deploy": "npm run build && push-dir --dir=dist --branch=gh-pages --cleanup",
+    "client-deploy": "npm run client-build && push-dir --dir=dist --branch=gh-pages --cleanup",
     "server-build": "rimraf server-dist && tsc -p tsconfig.server.json",
     "server-start:simple": "ts-node -r tsconfig-paths/register -P tsconfig.server.json src/server/main.ts",
     "server-start": "tsc-watch -p tsconfig.server.json --onSuccess \"node -r ./tsconfig-paths-bootstrap.js server-dist/server/main.js\"",
