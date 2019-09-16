@@ -1,6 +1,5 @@
 <template lang="pug">
 .game-wrapper
-    .game-over(@click="this.handleGameOver", :class="{hide: !this.gameCore.isGameOver || this.hideGameOver}")
     GameStatus(:gameCore="this.gameCore", @hamburgerClick="showMenu=!showMenu")
     .game-table.table-background-color(@click="showMenu=false")
       .left-side
@@ -21,22 +20,28 @@
                 CardPile(:cards="stack.element" @cardSelected="myLog")
           .score-area
               ScoreFrame(v-for="(frame, index) in this.gameCore.frameScores", :key="index", :frame="frame", :round="index + 1")
-    LeftMenu(:shouldShow="showMenu",@close="showMenu = false")
+    LeftMenu(:shouldShow="showMenu",@close="showMenu = false", @login="showLogin = true", @logout="showLogout = true")
+    Login(:shouldShow="showLogin", @close="showLogin = false")
+    Logout(:shouldShow="showLogout", @close="showLogout = false")
+    Modal(@close="this.handleGameOver", :shouldShow="this.gameCore.isGameOver && !this.hideGameOver") GAME OVER
 
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import CardComponent, { ICard, suit } from "../components/Card.vue";
-import CardPile from "../components/CardPile.vue";
-import GameStatus from "../components/GameStatus.vue";
-import StatusVisualizer from "../components/StatusVisualizer.vue";
-import ScoreFrame from "../components/ScoreFrame.vue";
-import LeftMenu from "../components/LeftMenu.vue";
-import { Card } from "@common/models/card";
-import { Pile, PinTable } from "@common/models/deck";
-import { KeyedElement, keyUp } from "@common/utils/sequence";
-import { GameCore } from "@common/models/game-core";
+import { Component, Vue } from 'vue-property-decorator';
+import CardComponent, { ICard, suit } from '../components/Card.vue';
+import CardPile from '../components/CardPile.vue';
+import Modal from '../components/Modal.vue';
+import Login from '../components/Login.vue';
+import Logout from '../components/Logout.vue';
+import GameStatus from '../components/GameStatus.vue';
+import StatusVisualizer from '../components/StatusVisualizer.vue';
+import ScoreFrame from '../components/ScoreFrame.vue';
+import LeftMenu from '../components/LeftMenu.vue';
+import { Card } from '@common/models/card';
+import { Pile, PinTable } from '@common/models/deck';
+import { KeyedElement, keyUp } from '@common/utils/sequence';
+import { GameCore } from '@common/models/game-core';
 
 @Component({
   components: {
@@ -45,20 +50,26 @@ import { GameCore } from "@common/models/game-core";
     GameStatus,
     StatusVisualizer,
     ScoreFrame,
-    LeftMenu
-  }
+    LeftMenu,
+    Modal,
+    Login,
+    Logout,
+  },
 })
 export default class Home extends Vue {
   private get pinRows() {
     return keyUp(this.gameCore.pinTable.cardRows);
   }
 
+  private showLogin: boolean = false;
+  private showLogout: boolean = false;
+
   private showMenu: boolean = false;
 
   private hideGameOver: boolean = false;
 
   private get stacks() {
-    return keyUp(this.gameCore.stacks.map(s => s.cards));
+    return keyUp(this.gameCore.stacks.map((s) => s.cards));
   }
 
   private keyUp = keyUp;
@@ -220,26 +231,6 @@ button {
   flex-wrap: wrap;
   max-width: 30em;
   justify-content: center;
-}
-
-.game-over {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  z-index: 100;
-  background-color: #00000057;
-}
-
-.game-over:after {
-  content: "Game Over";
-  text-transform: uppercase;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 5em 10em;
-  color: yellow;
-  background-color: darkgreen;
 }
 
 .end-roll {

@@ -1,17 +1,18 @@
 <template lang="pug">
-    .hamburger
-        .line.label-background-color(v-for="line in lines" :key="line.id", :style="{top: line.top}") 
+    .hamburger-content
+        .line.label-background-color(v-for="line in lines" :key="line.id", :style="{top: line.top, height: size + '%'}") 
     </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 @Component({})
 export default class Hamburger extends Vue {
-  private size = 15;
+  private readonly size = 15;
+
   private get lines() {
     const ls = [];
     for (let i = 0; i < 3; i++) {
-      ls.push({ id: i, top: 2 * i * this.size + '%' });
+      ls.push({ id: i, top: 8 + 2 * i * this.size + '%' });
     }
     return ls;
   }
@@ -19,7 +20,7 @@ export default class Hamburger extends Vue {
 </script>
 
 <style scoped>
-.hamburger {
+.hamburger-content {
   position: relative;
   display: block;
   height: 100%;

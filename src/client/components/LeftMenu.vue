@@ -1,31 +1,51 @@
 <template lang="pug">
 nav.dark-background-color(:style="style", @click.prevent="handleClick")
     .close.label-color(@click="close()") X
-    .info.label-color
-        .info-data.item User
+    .info.label-color(v-if="!isLoggedIn")
+        .info-data.item(@click="login()") Log in
+    .info.label-color(v-if="isLoggedIn")
+        .info-data.item(style="text-transform: none") Hello {{store.state.userData.userName}}</span>!
     .actions.label-color
         .action.item Save
         .action.item Load
+    .log-out.label-color(v-if="isLoggedIn", @click="logOut()") Log out
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from "vue-property-decorator";
+import { UserService } from '@client/service/user';
+import { store } from '@client/utils/store';
+import { Component, Vue, Prop, Emit } from 'vue-property-decorator';
 @Component({ components: {} })
 export default class LeftMenu extends Vue {
   @Prop()
   public shouldShow!: boolean;
 
-  @Emit("close")
-  close() {}
+  private readonly userService = new UserService();
 
-  handleClick(e: MouseEvent) {
+  private store = store;
+  private get isLoggedIn() {
+    return this.store.state.userData !== undefined && this.store.state.userData.userName.length > 0;
+  }
+
+  @Emit('close')
+  public close() { }
+
+  public handleClick(e: MouseEvent) {
     e.stopPropagation();
   }
+
+  @Emit('close')
+  @Emit('login')
+  public login() { }
+
+  @Emit('close')
+  @Emit('logout')
+  private logOut() { }
 
   public get style() {
     if (this.shouldShow) {
       return {
-        left: "0px"
+        left: '0px',
       };
     } else {
       return {};
@@ -64,5 +84,17 @@ nav {
   padding: 0.5em 1em;
   text-transform: uppercase;
   user-select: none;
+}
+
+.info {
+  text-align: left;
+}
+
+.log-out {
+  flex-grow: 1;
+  align-self: flex-end;
+  text-align: end;
+  display: flex;
+  align-items: flex-end;
 }
 </style>
