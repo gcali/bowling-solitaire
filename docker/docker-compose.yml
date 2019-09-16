@@ -9,6 +9,7 @@ services:
       - 8998:5432
 
   adminer:
-    image: adminer
+    build: 
+      context: ./adminer
     ports:
       - 8999:8080
