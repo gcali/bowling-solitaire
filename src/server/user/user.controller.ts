@@ -1,3 +1,4 @@
+import { Roles } from '@server/decorators/role';
 import { Controller, Get, Put, Body, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 
@@ -17,6 +18,7 @@ export class UserController {
         return await this.userService.getAllUsers();
     }
 
+    @Roles('admin')
     @Post()
     public async insertUser(@Body() payload: InsertPayload) {
         await this.userService.addUser({

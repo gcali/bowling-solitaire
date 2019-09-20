@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { Entity, PrimaryGeneratedColumn, Column, Index, Connection, Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { RoleType } from './role.entity';
 
 export interface User {
     userName: string;
+    roles?: RoleType[];
 }
 
-export interface UserPassword extends User {
+export interface UserComplete extends User {
     password: string;
 }
 
@@ -17,14 +19,16 @@ export class UserService {
     constructor(private readonly connection: Connection) {
         this.userRepo = connection.getRepository<UserEntity>(UserEntity);
     }
-    public async find(username: string): Promise<UserPassword|null> {
-        const dbUser = await this.userRepo.findOne({where: {userName: username}});
+    public async find(username: string): Promise<UserComplete | null> {
+        const dbUser = await this.userRepo.findOne({ where: { userName: username }, relations: ['roles'] });
         if (!dbUser) {
             return null;
-        } else  {
+        } else {
+            const roles = dbUser.roles.map((r) => r.role);
             return {
                 userName: dbUser.userName,
                 password: dbUser.hashedPassword,
+                roles: roles || [],
             };
         }
     }
