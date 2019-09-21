@@ -9,7 +9,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 @Component({})
 export default class Loader extends Vue {
-  @Prop({ default: false })
+  @Prop({ default: true })
   public shouldShow!: boolean;
 
   public get style() {

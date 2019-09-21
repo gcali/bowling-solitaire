@@ -40,9 +40,9 @@ export default class Modal extends Vue {
   background-color: rgba(1, 1, 1, 0.3);
   top: 0;
   left: 0;
-  /* display: flex; */
   justify-content: center;
   align-items: center;
+  z-index: 100;
 }
 .content {
   max-width: 19em;

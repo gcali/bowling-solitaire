@@ -12,7 +12,7 @@
                 button.table-background-color.label-color(@click="logIn()") Log in
             .validation(v-if="errors.length > 0")
               .validation-message(v-for="error in errors") {{error}}
-            Loader.loader(:shouldShow="showLoader")
+            Loader.loader(v-if="showLoader")
 </template>
 
 <script lang="ts">
@@ -24,7 +24,7 @@ interface UserData {
 
 import Modal from './Modal.vue';
 import { Component, Vue, Prop, Emit, Watch } from 'vue-property-decorator';
-import { UserService, UserLogInError, UserSignUpError } from '@client/service/user';
+import { UserService } from '@client/service/user';
 import { UserValidationService } from '@client/service/validation';
 import Loader from './Loader.vue';
 
@@ -102,6 +102,7 @@ export default class Login extends Vue {
   private async withLoader(callback: (() => Promise<boolean>)) {
     if (!this.showLoader) {
       this.showLoader = true;
+      this.errors = [];
       let result = false;
       try {
         result = await callback();
@@ -149,6 +150,9 @@ button {
 .validation {
   color: red;
   font-weight: bold;
+  width: 0;
+  min-width: 100%;
+  overflow-wrap: break-word;
 }
 </style>
 

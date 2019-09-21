@@ -178,7 +178,7 @@ export default class Home extends Vue {
   flex-direction: column;
   justify-content: flex-start;
   flex: 1 1 auto;
-  align-items: center;
+  align-items: stretch;
 }
 
 .action-area {
@@ -201,7 +201,7 @@ export default class Home extends Vue {
   flex-direction: row;
   flex-wrap: wrap;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
 }
 .left-status-group {
   position: absolute;

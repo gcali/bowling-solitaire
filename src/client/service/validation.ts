@@ -1,4 +1,5 @@
-import { UserSignUpError, UserLogInError, UserData } from './user';
+import { UserData } from './user';
+import { UserSignUpError, UserLogInError } from '@common/codes/auth';
 
 export type UserValidationError = 'NO_USER' | 'NO_PASSWORD';
 
@@ -42,6 +43,7 @@ export class UserValidationService {
         return errors.map((e) => {
             switch (e) {
                 case 'USER_EXISTING': return 'User already exists';
+                case 'NETWORK_ERROR': return 'Could not reach te server';
             }
         });
     }
@@ -49,8 +51,8 @@ export class UserValidationService {
     public mapLogInErrors(errors: UserLogInError[]): string[] {
         return errors.map((e) => {
             switch (e) {
-                case 'USER_NOT_FOUND': return 'User was not found';
-                case 'WRONG_PASSWORD': return 'Wrong password';
+                case 'USER_NOT_FOUND': return 'User was not found or wrong password';
+                case 'NETWORK_ERROR': return 'Could not reach the server';
             }
         });
     }

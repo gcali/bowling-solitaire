@@ -5,7 +5,7 @@
           .actions
               button.dark-background-color.label-color(@click="handleClose()") Cancel
               button.table-background-color.label-color(@click="logOut()") Log out
-          Loader.loader(:shouldShow="showLoader")
+          Loader.loader(v-if="shouldShow")
 </template>
 
 <script lang="ts">

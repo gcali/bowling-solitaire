@@ -1,6 +1,6 @@
-interface UserState {
+export interface UserState {
     userName: string;
-    password: string;
+    // password: string;
 }
 interface State {
     userData?: UserState;
@@ -15,7 +15,7 @@ class Store {
     private readonly _state: State = {
         userData: {
             userName: '',
-            password: '',
+            // password: '',
         },
     };
     constructor(public debug: boolean) {
