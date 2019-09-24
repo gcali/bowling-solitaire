@@ -1,6 +1,6 @@
 <template lang="pug">
 .game-wrapper
-    GameStatus(:gameCore="this.gameCore", @hamburgerClick="showMenu=!showMenu")
+    GameStatus(:gameCore="this.gameCore", @hamburgerClick="showMenu=!showMenu", @help="this.handleHelp")
     .game-table.table-background-color(@click="showMenu=false")
       .left-side
         .pin-table
@@ -15,7 +15,7 @@
             button.end-roll.dark-background-color.label-color(@click="gameCore.endBall()", :class="{hide: this.gameCore.isGameOver}") End roll
             button.end-roll.dark-background-color.label-color(@click="newGame", :class="{hide: !this.gameCore.isGameOver}") New game
       .drawing-area
-          .drawing-stacks
+          .drawing-stacks(data-intro="I'm a happy step")
             .drawing-stack(v-for="stack in this.stacks" :key="stack.id")
                 CardPile(:cards="stack.element" @cardSelected="myLog")
           .score-area
@@ -42,6 +42,8 @@ import { Card } from '@common/models/card';
 import { Pile, PinTable } from '@common/models/deck';
 import { KeyedElement, keyUp } from '@common/utils/sequence';
 import { GameCore } from '@common/models/game-core';
+
+import introJs from 'intro.js';
 
 @Component({
   components: {
@@ -76,6 +78,11 @@ export default class Home extends Vue {
 
   private gameCore: GameCore = new GameCore(new PinTable<Card>([]), []);
   private howManyStacks: number = 3;
+
+  public handleHelp(): void {
+    introJs().start();
+    alert('Hello!');
+  }
 
   public mounted() {
     this.setGameCore(GameCore.generateRandomly());

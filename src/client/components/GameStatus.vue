@@ -4,9 +4,10 @@
     Hamburger
   .main-status
     StatusVisualizer(label="Score", :value="this.gameCore.totalScore")
-    StatusVisualizer(label="Selected", :value="this.selected", :class="{hide: this.gameCore.isGameOver}")
-    StatusVisualizer(label="Game over", value="", :class="{hide: !this.gameCore.isGameOver}")
+    StatusVisualizer(v-if="!this.gameCore.isGameOver", label="Selected", :value="this.selected")
+    StatusVisualizer(v-if="this.gameCore.isGameOver", label="Game over", value="")
   .user-name.label-color.unselectable(:title="userName") {{userName}}
+  .help.label-color.unselectable(@click="this.askForHelp") ?
 </template>
 
 <script lang="ts">
@@ -25,13 +26,6 @@ export default class GameStatus extends Vue {
     return '';
   }
 
-  private store = store;
-  @Prop({ required: true })
-  private gameCore!: GameCore;
-
-  @Emit('hamburgerClick')
-  public hamburgerClick(e: MouseEvent) { }
-
   private get selected(): string {
     const selected = this.gameCore.selectedSum;
     if (selected === 0) {
@@ -40,6 +34,16 @@ export default class GameStatus extends Vue {
       return selected.toString();
     }
   }
+
+  private store = store;
+  @Prop({ required: true })
+  private gameCore!: GameCore;
+
+  @Emit('help')
+  public askForHelp(): void { }
+
+  @Emit('hamburgerClick')
+  public hamburgerClick(e: MouseEvent) { }
 }
 </script>
 
@@ -83,5 +87,12 @@ export default class GameStatus extends Vue {
   max-width: 5em;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.help {
+  flex: 0 0 1.1em;
+  border: 2px solid yellowgreen;
+  border-radius: 50%;
+  margin-right: 1em;
 }
 </style>

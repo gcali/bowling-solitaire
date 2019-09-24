@@ -1,4 +1,4 @@
-import { Entity, Index, Column, PrimaryColumn, ManyToMany, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { UserEntity } from './user.entity';
 
 export type RoleType = 'admin';
