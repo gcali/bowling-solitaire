@@ -4,7 +4,7 @@
     Hamburger
   .main-status
     StatusVisualizer(label="Score", :value="this.gameCore.totalScore")
-    StatusVisualizer(v-if="!this.gameCore.isGameOver", label="Selected", :value="this.selected")
+    StatusVisualizer(v-if="!this.gameCore.isGameOver", label="Set", :value="this.selected")
     StatusVisualizer(v-if="this.gameCore.isGameOver", label="Game over", value="")
   .user-name.label-color.unselectable(:title="userName") {{userName}}
   .help.label-color.unselectable(@click="this.askForHelp") ?

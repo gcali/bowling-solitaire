@@ -1,15 +1,15 @@
 <template lang="pug">
 .pin-table
     .left-status-group
-    .status
-        StatusVisualizer(label="Ball", :value="this.gameCore.isFirstRoll ? '1' : '2'")
-    .status
-        StatusVisualizer(label="Turn", :value="this.gameCore.turnCounter")
+        .status
+            StatusVisualizer(label="Ball", :value="this.gameCore.isFirstRoll ? '1' : '2'")
+        .status
+            StatusVisualizer(label="Turn", :value="this.gameCore.turnCounter")
     .pin-row(v-for="cardRow in pinRows" :key="cardRow.id")
         CardComponent(v-for="card in keyUp(cardRow.element)" :card="card.element" :key="card.id" @click="pinClick(card.element)").pin-card
     .action-area
-    button.end-roll.dark-background-color.label-color(@click="gameCore.endBall()", :class="{hide: this.gameCore.isGameOver}") End roll
-    button.end-roll.dark-background-color.label-color(@click="newGame", :class="{hide: !this.gameCore.isGameOver}") New game
+        button.end-roll.dark-background-color.label-color(@click="gameCore.endBall()", :class="{hide: this.gameCore.isGameOver}") End roll
+        button.end-roll.dark-background-color.label-color(@click="newGame", :class="{hide: !this.gameCore.isGameOver}") New game
 </template>
 
 <script lang="ts">
