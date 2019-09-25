@@ -71,6 +71,12 @@ export class PinTable<T extends Card> {
         if (this.cards.length > 10) {
             throw new Error('PinTable must have at most 10 cards');
         }
+        if (this.cards.length === 10) {
+            this.cards[5].isCentral = true;
+            for (let i = 0; i < 4; i++) {
+                this.cards[i].isBackRow = true;
+            }
+        }
         this.cards = this.cards.reverse();
     }
 
