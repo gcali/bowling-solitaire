@@ -53,7 +53,7 @@ export class PinTable<T extends Card> {
     }
 
     public get flatCards(): T[] {
-        return this.cards.reverse();
+        return this.cards.slice().reverse();
     }
 
     private get selectedCards(): T[] {

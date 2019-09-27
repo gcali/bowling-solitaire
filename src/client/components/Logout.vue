@@ -5,14 +5,14 @@
           .actions
               button.dark-background-color.label-color(@click="handleClose()") Cancel
               button.table-background-color.label-color(@click="logOut()") Log out
-          Loader.loader(v-if="shouldShow")
+          Loader.loader(v-if="showLoader")
 </template>
 
 <script lang="ts">
 
 interface UserData {
-  userName: string;
-  password: string;
+    userName: string;
+    password: string;
 }
 
 import Modal from './Modal.vue';
@@ -22,66 +22,66 @@ import Loader from './Loader.vue';
 
 @Component({ components: { Modal, Loader } })
 export default class Logout extends Vue {
-  @Prop({ default: true })
-  public shouldShow!: boolean;
+    @Prop({ default: true })
+    public shouldShow!: boolean;
 
-  private showLoader: boolean = false;
+    private showLoader: boolean = false;
 
-  private userService = new UserService();
+    private userService = new UserService();
 
-  private async logOut() {
-    await this.withLoader(() => this.userService.logOut());
-    this.handleClose();
-  }
-
-  private async withLoader(callback: (() => Promise<void>)) {
-    if (!this.showLoader) {
-      this.showLoader = true;
-      try {
-        await callback();
-      } finally {
-        this.showLoader = false;
-      }
+    private async logOut() {
+        await this.withLoader(() => this.userService.logOut());
+        this.handleClose();
     }
-  }
 
-  private handleClose() {
-    if (!this.showLoader) {
-      this.$emit('close');
+    private async withLoader(callback: (() => Promise<void>)) {
+        if (!this.showLoader) {
+            this.showLoader = true;
+            try {
+                await callback();
+            } finally {
+                this.showLoader = false;
+            }
+        }
     }
-  }
+
+    private handleClose() {
+        if (!this.showLoader) {
+            this.$emit('close');
+        }
+    }
 
 }
 </script>
 
 <style scoped>
 .modal-content {
-  padding-top: 2em;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
+    padding-top: 2em;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
 .input-row {
-  padding: 0.5em 1em;
+    padding: 0.5em 1em;
 }
 .label {
-  text-transform: uppercase;
+    text-transform: uppercase;
 }
 .actions {
-  margin: 0.5em 1em;
-  margin-top: 1em;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
+    margin: 0.5em 1em;
+    margin-top: 1em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
 }
 button {
-  margin: 0em 1em;
+    margin: 0em 1em;
 }
 .input-row input {
-  padding: 0.1em 0.3em;
+    padding: 0.1em 0.3em;
 }
 .loader {
-  margin: 0 auto;
+    margin: 0 auto;
 }
 </style>
 

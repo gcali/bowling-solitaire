@@ -29,8 +29,8 @@ import LeftMenu from '../components/LeftMenu.vue';
 import { Card } from '@common/models/card';
 import { Pile, PinTable } from '@common/models/deck';
 import { GameCore } from '@common/models/game-core';
+import { GameComponent, GameCoreBackup, tutorialFactory } from '@client/service/tutorial';
 
-import introJs from 'intro.js';
 
 @Component({
     components: {
@@ -43,170 +43,48 @@ import introJs from 'intro.js';
         PinTableComponent,
     },
 })
-export default class Home extends Vue {
+export default class Home extends Vue implements GameComponent {
 
-    private highlightCentral: boolean = false;
+    public highlightCentral: boolean = false;
+    public highlightBackRow: boolean = false;
+
+    public gameCore: GameCore = new GameCore(new PinTable<Card>([]), []);
     private showLogin: boolean = false;
     private showLogout: boolean = false;
 
     private showMenu: boolean = false;
 
     private hideGameOver: boolean = false;
-
-    private gameCore: GameCore = new GameCore(new PinTable<Card>([]), []);
     private howManyStacks: number = 3;
-    private highlightBackRow: boolean = false;
 
     public handleHelp(): void {
-        const oldGameCore = this.gameCore;
-        const newGameCore = GameCore.generateRandomly();
-        this.setGameCore(newGameCore);
-        for (let i = 0; i < 4; i++) {
-            this.gameCore.endBall();
-        }
-        const created = introJs();
-        created.setOptions({
-            skipLabel: 'Quit',
-            showBullets: false,
-            showStepNumbers: false,
-            exitOnOverlayClick: false,
-            disableInteraction: true,
-            steps: [
-                {
-                    intro:
-                        'Welcome to bowling solitaire!',
-                },
-                {
-                    intro:
-                        'Bowling solitaire is a single player card game where you try and clear the pin table ' +
-                        'in the least possible number of card draws, or <em>strikes</em>'
-                    ,
-                },
-                {
-                    intro:
-                        'To do this, you need to match groups of cards from the pin table with cards from ' +
-                        'the drawing area; each ball you roll is represented by a sequence of matches',
-                },
-                {
-                    intro:
-                        'Every round is composed of two rolls and you have 10 rounds to try and reach the  ' +
-                        'highest possible score; the scoring rules are the same of regular bowling, strikes ' +
-                        'and spares included',
-                },
-                {
-                    intro:
-                        'The game is played with 20 cards from 2 suits (1-10 for each suit) that compose the ' +
-                        '<em>pin table</em> and the <em>drawing area</em>',
-                },
-                {
-                    intro:
-                        'Here you can find the <em>pin table</em>; ' +
-                        'it contains the ten pins you are trying to strike down',
-                    element: '.left-side',
-                },
-                {
-                    intro:
-                        'Here\'s the <em>drawing area</em>; you can use the cards of the drawing area ' +
-                        'to remove matching group of cards from the pin table.<br>',
-                    element: '.drawing-area',
-                },
-                {
-                    intro:
-                        'Each card you select from here represents a movement from the <em>ball</em> ' +
-                        'you are currently throwing',
-                    element: '.drawing-area',
-                },
-                {
-                    intro:
-                        'You start your game with the first ball of the first round; you end your round ' +
-                        'every two rolls or at each strike, whichever comes first',
-                    element: '.left-status-group',
-                },
-                {
-                    intro:
-                        'At each roll, you need to select up to three adjacent cards from the pin table; ' +
-                        'at least one must be selected',
-                    element: '.left-side',
-                },
-                {
-                    intro:
-                        'The first match of each roll is special:',
-                    element: '.left-side',
-                },
-                {
-                    intro:
-                        'You cannot select any pin on the last row',
-                    element: '.left-side',
-                },
-                {
-                    intro:
-                        'You can select the central pin <em>only</em> if you select another legal ' +
-                        'pin adjacent to it',
-                    element: '.left-side',
-                },
-                {
-                    intro: 'Selecting a group of cards is the first step in removing them',
-                },
-                {
-                    intro:
-                        'You remove a group of cards by matching the sum of their values ' +
-                        'with a card from the drawing area having the same rightmost figure',
-                },
-                {
-                    intro:
-                        'For instance, a group of two cards with values 4 and 5 can be matched ' +
-                        'with a card with value 9.<br>' +
-                        'A group of three cards with values 9, 8 and 3 can be matched ' +
-                        'with a card with value 10.',
-                },
-                {
-                    intro:
-                        'When you select a group of cards, its sum is shown in the status bar, along ' +
-                        'with your current score',
-                    element: '.game-status',
-                },
-                {
-                    intro:
-                        'When you don\'t find any other match or you want to skip to your next ball, ' +
-                        'click on end roll',
-                    element: '.end-roll',
-                },
-                {
-                    intro:
-                        'A summary of your scoring and turns will be shown in the score area',
-                    element: '.score-area',
-                    scrollTo: 'element',
-                },
-            ],
-        });
-        created.onchange((e) => {
-            const isCentralStep = (created as any)._currentStep === 12;
-            const isBackRowStep = (created as any)._currentStep === 11;
-            this.highlightCentral = isCentralStep;
-            this.highlightBackRow = isBackRowStep;
-        });
-        // created.onafterchange((e) => {
-        //     this.gameCore.pinTable.flatCards.forEach((c) => c.selected = false);
-        // });
-        created.onexit(() => {
-            this.highlightCentral = false;
-            this.highlightBackRow = false;
-            this.setGameCore(oldGameCore);
-        });
-        created.start();
+        const tutorial = tutorialFactory(this);
+        tutorial.start();
     }
 
     public mounted() {
         this.setGameCore(GameCore.generateRandomly());
     }
 
-    private newGame() {
-        this.setGameCore(GameCore.generateRandomly());
+    public getGameCoreBackup(): GameCoreBackup {
+        return {
+            gameCore: this.gameCore,
+            hideGameOver: this.hideGameOver,
+        };
     }
 
-    private setGameCore(gameCore: GameCore) {
+    public restoreGameCoreBackup(backup: GameCoreBackup) {
+        this.gameCore = backup.gameCore;
+        this.hideGameOver = backup.hideGameOver;
+    }
+
+    public setGameCore(gameCore: GameCore) {
         this.gameCore = gameCore;
         this.hideGameOver = false;
+    }
+
+    private newGame() {
+        this.setGameCore(GameCore.generateRandomly());
     }
 
     private handleGameOver() {
@@ -214,6 +92,7 @@ export default class Home extends Vue {
     }
 
 }
+
 </script>
 
 <style>
@@ -294,7 +173,7 @@ button {
 }
 
 .introjs-prevbutton,
-.hideNext .introjs-nextbutton {
+.hide-next .introjs-nextbutton {
     display: none !important;
 }
 
@@ -302,7 +181,7 @@ button {
     display: inline !important;
 } */
 
-.showPrev .introjs-prevbutton {
+.show-prev .introjs-prevbutton {
     display: inline !important;
 }
 

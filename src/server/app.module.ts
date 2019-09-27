@@ -9,25 +9,32 @@ import { APP_GUARD } from '@nestjs/core';
 import { GlobalJwtGuard } from './guards/global-jwt.guard';
 import { RoleGuard } from './guards/role.guard';
 import { DbModule } from './db/db.module';
+import { ConfigModule } from './config/config.module';
+import { ConfigService } from './config/config.service';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
 @Module({
   imports: [
     GameModule,
-    TypeOrmModule.forRoot(
-      {
-        host: 'localhost',
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService): PostgresConnectionOptions => ({
         type: 'postgres',
-        port: 8998,
-        username: 'postgres',
-        password: 'password',
-        database: 'postgres',
-        synchronize: true,
+        host: configService.dbHost,
+        port: configService.dbPort,
+        username: configService.dbUser,
+        password: configService.dbPassword,
+        database: configService.dbName,
+        synchronize: configService.dbSync,
         entities: [__dirname + '/**/*.entity.{ts,js}'],
-      },
+      }),
+    },
     ),
     UserModule,
     AuthModule,
     DbModule,
+    ConfigModule,
   ],
   controllers: [AppController, UserController],
   providers: [
