@@ -11,7 +11,7 @@
     "server-lint": "tslint -p tsconfig.server.json -c tslint.json",
     "server-start": "tsc-watch -p tsconfig.server.json --onSuccess \"node -r ./tsconfig-paths-bootstrap.ts server-dist/server/main.js\"",
     "server-start:debug": "tsc-watch -p tsconfig.server.json --onSuccess \"node --inspect-brk server-dist/server/main.js\"",
-    "server-start:prod": "node server-dist/server/main.js",
+    "server-start:prod": "node -r ./tsconfig-paths-bootstrap.ts server-dist/server/main.js",
     "server-start:simple": "ts-node -r tsconfig-paths/register -P tsconfig.server.json src/server/main.ts",
     "server-test": "jest",
     "server-test:cov": "jest --coverage",
@@ -19,7 +19,8 @@
     "server-test:e2e": "jest --config ./test/jest-e2e.json",
     "server-test:watch": "jest --watch",
     "server-static": "copyfiles server*.env* server-dist",
-    "preserver-start": "copyfiles server*.env* server-dist"
+    "preserver-start": "copyfiles server*.env* server-dist",
+    "preserver-build": "copyfiles server*.env* server-dist"
   },
   "dependencies": {
     "@nestjs/common": "^6.0.0",
